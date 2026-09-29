@@ -256,9 +256,10 @@
   </style>
 </head>
 <body>
-  <!-- 1. 상단 모드 전환 내비게이션 바 -->
+<!-- 1. 상단 모드 전환 내비게이션 바 -->
   <nav class="top-nav" aria-label="메인 메뉴">
-    <a href="./index.html" class="nav-link active">💬 상황별 스몰토크</a>
+    <a href="./index.html" class="nav-link active" id="navTalkBtn">💬 상황별 스몰토크</a>
+    <button type="button" class="nav-link" id="navImageBtn">🎯 이미지 게임</button>
     <a href="./mbti.html" class="nav-link">🧠 MBTI별 질문</a>
   </nav>
 
@@ -275,7 +276,6 @@
     <button class="tab-btn" data-category="work">직장/회식</button>
     <button class="tab-btn" data-category="party">술자리/친목</button>
     <button class="tab-btn" data-category="deep">심화대화</button>
-    <button class="tab-btn" data-category="image">🎯 이미지 게임</button>
   </nav>
 
   <!-- 4. 메인 콘텐츠: 질문 카드와 뽑기/복사 버튼 -->
@@ -657,6 +657,37 @@
 
     allModal.style.display = 'none';
   };
+    // --- [상단 🎯 이미지 게임 탭 동작 연결] ---
+  const navImageBtn = document.getElementById('navImageBtn');
+  const navTalkBtn = document.getElementById('navTalkBtn');
+  const catTabBtns = document.querySelectorAll('.category-tabs .tab-btn');
+
+  if (navImageBtn) {
+    navImageBtn.addEventListener('click', () => {
+      // 상단 탭 활성화 전환
+      if (navTalkBtn) navTalkBtn.classList.remove('active');
+      navImageBtn.classList.add('active');
+
+      // 하단 카테고리 탭 선택 해제
+      catTabBtns.forEach(b => b.classList.remove('active'));
+
+      // 이미지 게임 질문 필터링 및 즉시 카드 뽑기
+      currentCategory = 'image';
+      if (typeof pickRandomQuestion === 'function') {
+        pickRandomQuestion();
+      } else if (typeof pickQuestion === 'function') {
+        pickQuestion();
+      }
+    });
+
+    // 하단 스몰토크 카테고리(전체, 소개팅 등)를 누르면 상단 탭 불빛 원복
+    catTabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navImageBtn.classList.remove('active');
+        if (navTalkBtn) navTalkBtn.classList.add('active');
+      });
+    });
+  }
   </script>
 </body>
 </html>
