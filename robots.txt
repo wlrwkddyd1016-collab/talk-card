@@ -1,0 +1,6 @@
+# [1. 모든 검색엔진 로봇(구글, 네이버, 다음 등)의 전체 페이지 수집 허용]
+User-agent: *
+Allow: /
+
+# [2. 검색 로봇에게 사이트 지도(sitemap.xml)의 정확한 위치 안내]
+Sitemap: https://wlrwkddyd1016-collab.github.io/talk-card/sitemap.xml
