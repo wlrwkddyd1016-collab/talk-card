@@ -594,12 +594,15 @@
   let modalSelectedCategory = '전체';
   let modalFilteredQuestions = [];
 
-  // 모달 열기
+ // 모달 열기 (현재 모드에 맞춰 이미지게임 또는 스몰토크 질문 자동 표시)
   if (openModalBtn) {
     openModalBtn.addEventListener('click', () => {
       allModal.style.display = 'flex';
-      renderModalCategoryTabs();
-      renderModalQuestions('전체');
+      if (currentCategory === 'image') {
+        window.filterModalQuestions('🎯 이미지 게임');
+      } else {
+        window.filterModalQuestions('전체');
+      }
     });
   }
 
@@ -618,7 +621,18 @@
   // 카테고리 필터 탭 렌더링
   function renderModalCategoryTabs() {
     if (!modalTabs || !allQuestions.length) return;
-    const catSet = new Set(allQuestions.map(q => q.categoryName || q.category));
+
+    // 1. 이미지 게임 모드일 때는 '🎯 이미지 게임' 단독 탭 표시
+    if (currentCategory === 'image') {
+      modalTabs.innerHTML = `
+        <button type="button" class="modal-filter-btn active">🎯 이미지 게임 (50)</button>
+      `;
+      return;
+    }
+
+    // 2. 일반 스몰토크 모드일 때는 일반 카테고리들만 표시 (이미지게임 제외)
+    const talkQuestions = allQuestions.filter(q => q.category !== 'image');
+    const catSet = new Set(talkQuestions.map(q => q.categoryName || q.category));
     const categories = ['전체', ...Array.from(catSet)];
 
     modalTabs.innerHTML = categories.map(cat => `
@@ -628,14 +642,18 @@
     `).join('');
   }
 
-  // 질문 목록 렌더링
+  // 질문 목록 렌더링 (모드별 필터 분기)
   window.filterModalQuestions = function(category) {
     modalSelectedCategory = category;
     renderModalCategoryTabs();
 
-    modalFilteredQuestions = (category === '전체') 
-      ? allQuestions 
-      : allQuestions.filter(q => (q.categoryName || q.category) === category);
+    if (currentCategory === 'image' || category === '🎯 이미지 게임') {
+      modalFilteredQuestions = allQuestions.filter(q => q.category === 'image');
+    } else if (category === '전체') {
+      modalFilteredQuestions = allQuestions.filter(q => q.category !== 'image');
+    } else {
+      modalFilteredQuestions = allQuestions.filter(q => (q.categoryName || q.category) === category);
+    }
 
     if (modalFilteredQuestions.length === 0) {
       modalList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">질문이 없습니다.</div>';
@@ -653,7 +671,6 @@
       </div>
     `).join('');
   };
-
   // 목록에서 특정 질문 클릭 시 메인 카드에 즉시 적용
   window.selectModalCard = function(index) {
     const selected = modalFilteredQuestions[index];
