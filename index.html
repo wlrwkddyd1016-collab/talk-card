@@ -178,6 +178,36 @@
       transform: scale(0.98);
     }
 
+    /* [5-2. 질문 복사하기 버튼] */
+    .copy-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px 0;
+      background-color: #ffffff;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .copy-btn:hover {
+      background-color: #eef2ff;
+    }
+
+    .copy-btn:active {
+      transform: scale(0.98);
+    }
+
+    .copy-btn.copied {
+      background-color: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+
     /* [6. 하단 푸터 (SEO & 애드센스 심사용 정보)] */
     footer {
       margin-top: 40px;
@@ -192,29 +222,6 @@
       text-decoration: underline;
       margin: 0 6px;
     }
-    /* ===== 질문 복사하기 버튼 ===== */
-.copy-btn {
-  display: block;
-  margin: 16px auto 0;
-  padding: 12px 24px;
-  background: #4f46e5;
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
-  transition: background 0.2s, transform 0.1s;
-  -webkit-tap-highlight-color: transparent;
-}
-.copy-btn:hover { background: #4338ca; }
-.copy-btn:active { transform: scale(0.97); }
-.copy-btn.copied {
-  background: #10b981;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-}
   </style>
 </head>
 <body>
@@ -244,8 +251,8 @@
 
     <div class="action-btn-area">
       <button class="next-btn" id="nextBtn">🎲 다른 질문 뽑기</button>
+      <button class="copy-btn" id="copyBtn" type="button">📋 질문 복사하기</button>
     </div>
-<button id="copyBtn" class="copy-btn" type="button">📋 질문 복사하기</button>
   </main>
 
   <!-- 4. 푸터: 애드센스 심사 통과를 위한 필수 정적 텍스트 안내 -->
@@ -255,51 +262,6 @@
   </footer>
 
   <!-- [7. 바닐라 자바스크립트 동작 로직] -->
-// ===== 질문 복사하기 기능 =====
-// ⚠️ 아래 두 줄만 내 사이트에 맞게 확인하세요.
-// 질문 문장과 해시태그가 들어 있는 태그의 id로 바꿔주세요. (예: '#questionText', '#questionTag')
-const QUESTION_SELECTOR = '#question';
-const TAG_SELECTOR = '#tag';
-
-const copyBtn = document.getElementById('copyBtn');
-const COPY_LABEL = '📋 질문 복사하기';
-let copyTimer = null;
-
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (e) {
-    // 클립보드 API가 막힌 환경을 위한 예비 방법
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
-}
-
-copyBtn.addEventListener('click', async () => {
-  const q = document.querySelector(QUESTION_SELECTOR);
-  const t = document.querySelector(TAG_SELECTOR);
-  const text = [q ? q.innerText.trim() : '', t ? t.innerText.trim() : '']
-    .filter(Boolean)
-    .join('\n');
-  if (!text) return;
-
-  await copyText(text);
-
-  copyBtn.textContent = '✅ 복사 완료!';
-  copyBtn.classList.add('copied');
-
-  clearTimeout(copyTimer);
-  copyTimer = setTimeout(() => {
-    copyBtn.textContent = COPY_LABEL;
-    copyBtn.classList.remove('copied');
-  }, 2000);
-});
   <script>
     // 1. 상태 관리 변수 정의
     let allQuestions = [];       // questions.json 전체 데이터를 저장할 배열
@@ -311,6 +273,7 @@ copyBtn.addEventListener('click', async () => {
     const questionEl = document.getElementById('questionText');
     const tagEl = document.getElementById('tagText');
     const nextBtn = document.getElementById('nextBtn');
+    const copyBtn = document.getElementById('copyBtn');
     const cardEl = document.getElementById('questionCard');
     const tabButtons = document.querySelectorAll('.tab-btn');
 
@@ -385,7 +348,45 @@ copyBtn.addEventListener('click', async () => {
     // 5. '다른 질문 뽑기' 버튼 클릭 이벤트 연결
     nextBtn.addEventListener('click', showRandomQuestion);
 
-    // 6. 페이지가 열리면 데이터 로딩 시작
+    // 6. '질문 복사하기' 기능
+    const COPY_LABEL = '📋 질문 복사하기';
+    let copyTimer = null;
+
+    // 클립보드 복사 (navigator.clipboard 우선, 막힌 환경은 예비 방법 사용)
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    copyBtn.addEventListener('click', async () => {
+      // 아직 질문이 로딩 중이거나 불러오기 실패한 상태면 복사하지 않음
+      if (allQuestions.length === 0) return;
+
+      const text = questionEl.textContent.trim() + '\n' + tagEl.textContent.trim();
+      await copyText(text);
+
+      // 버튼 문구 2초간 변경 후 원래대로 복구
+      copyBtn.textContent = '✅ 복사 완료!';
+      copyBtn.classList.add('copied');
+
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(() => {
+        copyBtn.textContent = COPY_LABEL;
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+
+    // 7. 페이지가 열리면 데이터 로딩 시작
     loadQuestions();
   </script>
 </body>
