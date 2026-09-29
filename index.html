@@ -245,6 +245,7 @@
     <div class="action-btn-area">
       <button class="next-btn" id="nextBtn">🎲 다른 질문 뽑기</button>
     </div>
+<button id="copyBtn" class="copy-btn" type="button">📋 질문 복사하기</button>
   </main>
 
   <!-- 4. 푸터: 애드센스 심사 통과를 위한 필수 정적 텍스트 안내 -->
@@ -254,6 +255,51 @@
   </footer>
 
   <!-- [7. 바닐라 자바스크립트 동작 로직] -->
+// ===== 질문 복사하기 기능 =====
+// ⚠️ 아래 두 줄만 내 사이트에 맞게 확인하세요.
+// 질문 문장과 해시태그가 들어 있는 태그의 id로 바꿔주세요. (예: '#questionText', '#questionTag')
+const QUESTION_SELECTOR = '#question';
+const TAG_SELECTOR = '#tag';
+
+const copyBtn = document.getElementById('copyBtn');
+const COPY_LABEL = '📋 질문 복사하기';
+let copyTimer = null;
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    // 클립보드 API가 막힌 환경을 위한 예비 방법
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+}
+
+copyBtn.addEventListener('click', async () => {
+  const q = document.querySelector(QUESTION_SELECTOR);
+  const t = document.querySelector(TAG_SELECTOR);
+  const text = [q ? q.innerText.trim() : '', t ? t.innerText.trim() : '']
+    .filter(Boolean)
+    .join('\n');
+  if (!text) return;
+
+  await copyText(text);
+
+  copyBtn.textContent = '✅ 복사 완료!';
+  copyBtn.classList.add('copied');
+
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(() => {
+    copyBtn.textContent = COPY_LABEL;
+    copyBtn.classList.remove('copied');
+  }, 2000);
+});
   <script>
     // 1. 상태 관리 변수 정의
     let allQuestions = [];       // questions.json 전체 데이터를 저장할 배열
