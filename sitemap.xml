@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- [검색엔진 로봇이 사이트 구조를 파악할 수 있도록 돕는 표준 사이트맵 규격] -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- 1. 메인 상황별 스몰토크 페이지 -->
   <url>
-    <loc>https://wlrwkddyd1016-collab.github.io/talk-card/</loc>
+    <loc>https://talkpick.kr/</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- 2. 16가지 MBTI 질문 모음집 페이지 -->
   <url>
-    <loc>https://wlrwkddyd1016-collab.github.io/talk-card/mbti.html</loc>
+    <loc>https://talkpick.kr/mbti.html</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
-
-  <!-- 3. 개인정보처리방침 및 애드센스 쿠키 고지 페이지 -->
   <url>
-    <loc>https://wlrwkddyd1016-collab.github.io/talk-card/privacy.html</loc>
+    <loc>https://talkpick.kr/privacy.html</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.3</priority>
   </url>
-
 </urlset>
