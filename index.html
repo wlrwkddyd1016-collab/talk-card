@@ -657,57 +657,85 @@
 
     allModal.style.display = 'none';
   };
-// --- [상단 🎯 이미지 게임 탭 동작 및 중간 바 자동 생성 로직] ---
+// --- [상단 모드 전환: 상황별 스몰토크 vs 🎯 이미지 게임 연동] ---
   const navImageBtn = document.getElementById('navImageBtn');
   const navTalkBtn = document.getElementById('navTalkBtn');
   const categoryTabsContainer = document.querySelector('.category-tabs');
-  const nextBtnEl = document.getElementById('nextBtn');
+  const normalTabBtns = categoryTabsContainer ? categoryTabsContainer.querySelectorAll('.tab-btn') : [];
 
-  if (navImageBtn && categoryTabsContainer) {
-    navImageBtn.addEventListener('click', () => {
-      // 1. 상단 메뉴 불빛 전환
-      if (navTalkBtn) navTalkBtn.classList.remove('active');
-      navImageBtn.classList.add('active');
+  // 1. 이미지 게임 모드 실행 (기존 카테고리 전부 숨기고 이미지 게임 탭만 단독 표시)
+  function switchToImageMode() {
+    if (navTalkBtn) navTalkBtn.classList.remove('active');
+    if (navImageBtn) navImageBtn.classList.add('active');
 
-      // 2. 중간 카테고리 탭들의 기존 선택 해제
-      const existingTabBtns = categoryTabsContainer.querySelectorAll('.tab-btn');
-      existingTabBtns.forEach(b => b.classList.remove('active'));
+    // 중간 바의 기존 카테고리(전체, 소개팅, 직장 등) 전부 숨김 처리
+    normalTabBtns.forEach(btn => {
+      btn.style.display = 'none';
+      btn.classList.remove('active');
+    });
 
-      // 3. 중간 바에 '🎯 이미지 게임' 탭이 없으면 생성, 있으면 활성화
-      let dynamicTab = document.getElementById('dynamicImageTab');
-      if (!dynamicTab) {
-        dynamicTab = document.createElement('button');
-        dynamicTab.id = 'dynamicImageTab';
-        dynamicTab.className = 'tab-btn active';
-        dynamicTab.type = 'button';
-        dynamicTab.textContent = '🎯 이미지 게임';
-        dynamicTab.setAttribute('data-category', 'image');
-        categoryTabsContainer.appendChild(dynamicTab);
+    // 중간 바에 '🎯 이미지 게임' 탭만 단독 생성 또는 노출
+    let dynamicTab = document.getElementById('dynamicImageTab');
+    if (!dynamicTab) {
+      dynamicTab = document.createElement('button');
+      dynamicTab.id = 'dynamicImageTab';
+      dynamicTab.className = 'tab-btn active';
+      dynamicTab.type = 'button';
+      dynamicTab.textContent = '🎯 이미지 게임';
+      dynamicTab.setAttribute('data-category', 'image');
+      categoryTabsContainer.appendChild(dynamicTab);
+    } else {
+      dynamicTab.style.display = 'inline-block';
+      dynamicTab.classList.add('active');
+    }
+
+    currentCategory = 'image';
+    showRandomQuestion();
+  }
+
+  // 2. 스몰토크 모드 실행 (기존 카테고리 다시 원복)
+  function switchToTalkMode() {
+    if (navImageBtn) navImageBtn.classList.remove('active');
+    if (navTalkBtn) navTalkBtn.classList.add('active');
+
+    // 숨겼던 기존 카테고리 버튼들 다시 보이기
+    normalTabBtns.forEach(btn => {
+      btn.style.display = '';
+      if (btn.getAttribute('data-category') === 'all') {
+        btn.classList.add('active');
       } else {
-        dynamicTab.classList.add('active');
-        dynamicTab.style.display = 'inline-block';
-      }
-
-      // 4. 카테고리를 이미지 게임으로 전환하고 질문 즉시 뽑기 실행
-      currentCategory = 'image';
-      if (nextBtnEl) {
-        nextBtnEl.click(); // '다른 질문 뽑기' 버튼 자동 클릭
+        btn.classList.remove('active');
       }
     });
 
-    // 5. 중간 바의 다른 카테고리(전체, 소개팅 등)를 누르면 이미지 게임 탭 제거 및 상단 원복
-    categoryTabsContainer.addEventListener('click', (e) => {
-      const clickedBtn = e.target.closest('.tab-btn');
-      if (!clickedBtn || clickedBtn.id === 'dynamicImageTab') return;
+    // 이미지 게임 단독 탭 숨기기
+    const dynamicTab = document.getElementById('dynamicImageTab');
+    if (dynamicTab) dynamicTab.style.display = 'none';
 
-      navImageBtn.classList.remove('active');
-      if (navTalkBtn) navTalkBtn.classList.add('active');
+    currentCategory = 'all';
+    showRandomQuestion();
+  }
 
-      const dynamicTab = document.getElementById('dynamicImageTab');
-      if (dynamicTab) {
-        dynamicTab.remove(); // 중간 바에서 이미지 게임 탭 자동 제거
-      }
+  // 상단 탭 클릭 이벤트 연결
+  if (navImageBtn) {
+    navImageBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.hash = 'image';
+      switchToImageMode();
     });
+  }
+
+  if (navTalkBtn) {
+    navTalkBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.hash = '';
+      switchToTalkMode();
+    });
+  }
+
+  // URL 주소 끝에 #image가 있거나 MBTI 페이지에서 넘어왔을 때 자동 실행
+  if (window.location.hash === '#image') {
+    setTimeout(switchToImageMode, 150);
   }
   </script>
 </body>
