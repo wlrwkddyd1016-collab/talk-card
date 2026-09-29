@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- [문자셋 및 모바일 뷰포트 설정] -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- [SEO 검색엔진 최적화 태그] -->
+  <title>16가지 MBTI별 질문 모음집 | 과몰입 방지 현실 대화 치트키</title>
+  <meta name="description" content="16가지 MBTI 성격유형별 핵심을 찌르는 현실적인 질문 모음집. 상대방의 진짜 성향과 속마음을 단번에 이끌어내는 센스 있는 질문을 확인하세요.">
+  <meta name="keywords" content="MBTI질문, MBTI대화주제, MBTI스몰토크, 성격유형질문, ENFJ질문, INTJ질문, INFP질문">
+
+  <!-- [SNS 공유 Open Graph] -->
+  <meta property="og:title" content="16가지 MBTI별 질문 모음집">
+  <meta property="og:description" content="상대방의 진짜 속마음이 터져 나오는 16개 MBTI 맞춤 질문 카드">
+  <meta property="og:type" content="website">
+
+  <style>
+    /* [기본 스타일 및 테마 정의] */
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --border-color: #e2e8f0;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Segoe UI", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 16px;
+    }
+
+    /* [상단 내비게이션 바] */
+    .top-nav {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      background-color: #ffffff;
+      color: var(--text-sub);
+      transition: all 0.2s ease;
+    }
+
+    .nav-link.active {
+      background-color: #1e293b;
+      color: #ffffff;
+      border-color: #1e293b;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    /* [16가지 MBTI 선택 그리드] */
+    .mbti-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 24px;
+    }
+
+    .mbti-btn {
+      border: 1px solid var(--border-color);
+      background-color: #ffffff;
+      color: var(--text-main);
+      padding: 10px 4px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mbti-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .mbti-btn.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+    }
+
+    /* [질문 카드 영역] */
+    main {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .question-card {
+      width: 100%;
+      min-height: 250px;
+      background-color: var(--card-bg);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .card-badge {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary);
+      background-color: #eef2ff;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 18px;
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.55;
+      color: var(--text-main);
+      word-break: keep-all;
+      margin-bottom: 18px;
+    }
+
+    .card-tag {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    /* [액션 버튼 그룹] */
+    .button-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .next-btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 16px 0;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+      transition: background-color 0.2s ease;
+    }
+
+    .next-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .copy-btn {
+      width: 100%;
+      background-color: #ffffff;
+      color: var(--text-sub);
+      border: 1px solid var(--border-color);
+      padding: 13px 0;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background-color: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .copy-btn.copied {
+      background-color: #ecfdf5;
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+    /* [푸터] */
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: var(--text-sub);
+      text-decoration: underline;
+      margin: 0 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 상단 모드 전환 내비게이션 바 -->
+  <nav class="top-nav" aria-label="메인 메뉴">
+    <a href="./index.html" class="nav-link">💬 상황별 스몰토크</a>
+    <a href="./mbti.html" class="nav-link active">🧠 MBTI별 질문</a>
+  </nav>
+
+  <!-- 2. 헤더: MBTI 페이지 소개 -->
+  <header>
+    <h1>🧠 16가지 MBTI 질문 모음집</h1>
+    <p>궁금한 성격유형을 누르고 상대방의 속마음을 열어보세요</p>
+  </header>
+
+  <!-- 3. 16가지 MBTI 선택 버튼 그리드 -->
+  <div class="mbti-grid" id="mbtiGrid">
+    <button class="mbti-btn active" data-mbti="INTJ">INTJ</button>
+    <button class="mbti-btn" data-mbti="INTP">INTP</button>
+    <button class="mbti-btn" data-mbti="ENTJ">ENTJ</button>
+    <button class="mbti-btn" data-mbti="ENTP">ENTP</button>
+    <button class="mbti-btn" data-mbti="INFJ">INFJ</button>
+    <button class="mbti-btn" data-mbti="INFP">INFP</button>
+    <button class="mbti-btn" data-mbti="ENFJ">ENFJ</button>
+    <button class="mbti-btn" data-mbti="ENFP">ENFP</button>
+    <button class="mbti-btn" data-mbti="ISTJ">ISTJ</button>
+    <button class="mbti-btn" data-mbti="ISFJ">ISFJ</button>
+    <button class="mbti-btn" data-mbti="ESTJ">ESTJ</button>
+    <button class="mbti-btn" data-mbti="ESFJ">ESFJ</button>
+    <button class="mbti-btn" data-mbti="ISTP">ISTP</button>
+    <button class="mbti-btn" data-mbti="ISFP">ISFP</button>
+    <button class="mbti-btn" data-mbti="ESTP">ESTP</button>
+    <button class="mbti-btn" data-mbti="ESFP">ESFP</button>
+  </div>
+
+  <!-- 4. 질문 표시 카드 및 액션 버튼 -->
+  <main>
+    <article class="question-card" id="questionCard">
+      <span class="card-badge" id="mbtiBadge">INTJ</span>
+      <h2 class="question-text" id="questionText">질문을 불러오는 중입니다...</h2>
+      <span class="card-tag" id="tagText">#로딩중</span>
+    </article>
+
+    <div class="button-group">
+      <button class="next-btn" id="nextBtn">🎲 다른 질문 뽑기</button>
+      <button class="copy-btn" id="copyBtn">📋 질문 복사하기</button>
+    </div>
+  </main>
+
+  <!-- 5. 푸터: 애드센스 규정 링크 -->
+  <footer>
+    <p>16가지 성격유형의 심리와 가치관을 탐색할 수 있는 무료 대화 카드입니다.</p>
+    <p>
+      <a href="./privacy.html">개인정보처리방침</a> | 
+      <a href="./index.html">상황별 질문</a>
+    </p>
+    <p style="margin-top: 8px;">© 2026 침묵 브레이커 (SmallTalk Web). All rights reserved.</p>
+  </footer>
+
+  <!-- [자바스크립트 동작 로직] -->
+  <script>
+    // 상태 변수 정의
+    let mbtiQuestions = [];
+    let currentMbti = 'INTJ';
+    let lastQuestionId = null;
+
+    // DOM 요소 캐싱
+    const badgeEl = document.getElementById('mbtiBadge');
+    const questionEl = document.getElementById('questionText');
+    const tagEl = document.getElementById('tagText');
+    const nextBtn = document.getElementById('nextBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const cardEl = document.getElementById('questionCard');
+    const mbtiButtons = document.querySelectorAll('.mbti-btn');
+
+    // 1. mbti_questions.json 비동기 로딩
+    async function loadMbtiQuestions() {
+      try {
+        const response = await fetch('./mbti_questions.json');
+        if (!response.ok) throw new Error('파일 로딩 실패');
+        mbtiQuestions = await response.json();
+        showMbtiQuestion();
+      } catch (err) {
+        questionEl.textContent = '질문 데이터를 불러오지 못했습니다.';
+        tagEl.textContent = 'mbti_questions.json 파일 위치를 확인하세요.';
+        console.error(err);
+      }
+    }
+
+    // 2. 현재 선택된 MBTI 질문 랜덤 추출 로직
+    function showMbtiQuestion() {
+      const pool = mbtiQuestions.filter(item => item.mbti === currentMbti);
+
+      if (pool.length === 0) {
+        questionEl.textContent = '해당 MBTI의 질문이 준비 중입니다.';
+        tagEl.textContent = '#업데이트예정';
+        return;
+      }
+
+      // 연속 동일 질문 방지
+      let availablePool = pool;
+      if (pool.length > 1 && lastQuestionId !== null) {
+        availablePool = pool.filter(item => item.id !== lastQuestionId);
+      }
+
+      const randomIndex = Math.floor(Math.random() * availablePool.length);
+      const selected = availablePool[randomIndex];
+      lastQuestionId = selected.id;
+
+      // 부드러운 전환 효과
+      cardEl.style.opacity = '0';
+      cardEl.style.transform = 'translateY(6px)';
+
+      setTimeout(() => {
+        badgeEl.textContent = selected.mbtiName;
+        questionEl.textContent = selected.question;
+        tagEl.textContent = selected.tag;
+        cardEl.style.opacity = '1';
+        cardEl.style.transform = 'translateY(0)';
+      }, 150);
+    }
+
+    // 3. MBTI 버튼 클릭 이벤트 리스너
+    mbtiButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        mbtiButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentMbti = btn.getAttribute('data-mbti');
+        showMbtiQuestion();
+      });
+    });
+
+    // 4. 다음 질문 뽑기
+    nextBtn.addEventListener('click', showMbtiQuestion);
+
+    // 5. 모바일/PC 완벽 호환 클립보드 복사 로직
+    copyBtn.addEventListener('click', async () => {
+      const textToCopy = `[${badgeEl.textContent}]\n"${questionEl.textContent}"\n${tagEl.textContent}`;
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        copyBtn.textContent = '✅ 복사 완료!';
+        copyBtn.classList.add('copied');
+      } catch (err) {
+        // Fallback for older browsers
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = textToCopy;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        copyBtn.textContent = '✅ 복사 완료!';
+        copyBtn.classList.add('copied');
+      }
+
+      setTimeout(() => {
+        copyBtn.textContent = '📋 질문 복사하기';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    });
+
+    // 데이터 로드 실행
+    loadMbtiQuestions();
+  </script>
+</body>
+</html>
