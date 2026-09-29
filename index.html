@@ -54,7 +54,57 @@
       justify-content: space-between;
       padding: 24px 16px;
     }
-
+/* [0. 상단 무한 롤링 공지 전광판 스타일] */
+    .notice-ticker-wrapper {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .ticker-badge {
+      background: #4f46e5;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ticker-track {
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+      mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+    }
+    .ticker-content {
+      display: inline-flex;
+      gap: 40px;
+      animation: tickerConveyor 20s linear infinite;
+    }
+    /* 마우스나 터치를 올리면 공지가 일시 정지되어 편하게 읽을 수 있습니다 */
+    .notice-ticker-wrapper:hover .ticker-content {
+      animation-play-state: paused;
+    }
+    .ticker-item {
+      font-size: 0.82rem;
+      color: #475569;
+      font-weight: 600;
+      display: inline-block;
+    }
+    @keyframes tickerConveyor {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     /* [1-2. 상단 모드 전환 내비게이션 바] */
     .top-nav {
       display: flex;
@@ -262,9 +312,77 @@
       text-decoration: underline;
       margin: 0 6px;
     }
+    /* [0. 상단 무한 롤링 공지 전광판 스타일] */
+    .notice-ticker-wrapper {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    .ticker-badge {
+      background: #4f46e5;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .ticker-track {
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1;
+      mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+    }
+    .ticker-content {
+      display: inline-flex;
+      gap: 40px;
+      animation: tickerConveyor 20s linear infinite;
+    }
+    .notice-ticker-wrapper:hover .ticker-content {
+      animation-play-state: paused;
+    }
+    .ticker-item {
+      font-size: 0.82rem;
+      color: #475569;
+      font-weight: 600;
+      display: inline-block;
+    }
+    @keyframes tickerConveyor {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
   </style>
 </head>
 <body>
+  <!-- 📢 최상단 실시간 롤링 공지 전광판 -->
+  <div class="notice-ticker-wrapper" title="마우스를 올리면 멈춥니다">
+    <span class="ticker-badge">📢 공지</span>
+    <div class="ticker-track">
+      <div class="ticker-content">
+        <!-- 💡 보여주고 싶은 공지 내용을 아래 문구에 자유롭게 적으시면 됩니다 -->
+        <span class="ticker-item">✨ 토크픽 신규 질문 및 🎯 이미지 게임 업데이트 완료!</span>
+        <span class="ticker-item">💡 마음에 드는 질문은 '질문 복사하기'로 바로 공유해보세요.</span>
+        <span class="ticker-item">🎉 어색한 침묵을 깨는 센스 있는 질문이 꾸준히 추가됩니다.</span>
+        
+        <!-- 끊김 없는 무한 루프를 위한 복제본 (위 3개 문구와 동일하게 맞춰주세요) -->
+        <span class="ticker-item">✨ 토크픽 신규 질문 및 🎯 이미지 게임 업데이트 완료!</span>
+        <span class="ticker-item">💡 마음에 드는 질문은 '질문 복사하기'로 바로 공유해보세요.</span>
+        <span class="ticker-item">🎉 어색한 침묵을 깨는 센스 있는 질문이 꾸준히 추가됩니다.</span>
+      </div>
+    </div>
+  </div>
 <!-- 1. 상단 모드 전환 내비게이션 바 -->
   <nav class="top-nav" aria-label="메인 메뉴">
     <a href="./index.html" class="nav-link active" id="navTalkBtn">💬 상황별 스몰토크</a>
