@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>당신의 질문은? | 토크픽 익명 질문 방명록</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✍️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK (호환성 버전) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; }
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 상단 내비게이션 바 */
+    .top-nav {
+      display: flex;
+      gap: 6px;
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+      width: 100%;
+    }
+    .nav-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+      border-radius: 9999px;
+      transition: all 0.2s;
+    }
+    .nav-tab.active {
+      background: #4f46e5;
+      color: #ffffff;
+    }
+
+    /* 방명록 헤더 */
+    .header-box {
+      text-align: center;
+      padding: 10px 0 6px;
+    }
+    .header-box h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .header-box p {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-top: 6px;
+    }
+
+    /* 질문 작성 카드 */
+    .write-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .input-text {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-text:focus {
+      border-color: #4f46e5;
+    }
+    .category-select {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      background: #ffffff;
+      outline: none;
+      color: #334155;
+    }
+    .input-textarea {
+      width: 100%;
+      height: 75px;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      resize: none;
+      outline: none;
+      line-height: 1.45;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .input-textarea:focus {
+      border-color: #4f46e5;
+    }
+    .submit-btn {
+      background: #4f46e5;
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover {
+      background: #4338ca;
+    }
+
+    /* 질문 피드 리스트 */
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .feed-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.15s;
+    }
+    .feed-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .feed-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4f46e5;
+      background: #e0e7ff;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .feed-author {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+    .feed-content {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+    .feed-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .action-btn {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .action-btn:hover {
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+    .action-btn.liked {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #ef4444;
+      font-weight: 700;
+    }
+
+    /* 토스트 알림 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 상단 내비게이션 바 -->
+    <nav class="top-nav">
+      <a href="index.html" class="nav-tab">💬 스몰토크</a>
+      <a href="index.html#image" class="nav-tab">🎯 이미지 게임</a>
+      <a href="mbti.html" class="nav-tab">🧠 MBTI 질문</a>
+      <a href="board.html" class="nav-tab active">✍️ 당신의 질문은?</a>
+    </nav>
+
+    <!-- 제목 영역 -->
+    <div class="header-box">
+      <h1>✍️ 당신의 질문은?</h1>
+      <p>어색한 침묵을 깰 여러분만의 센스 있는 질문을 남겨주세요!</p>
+    </div>
+
+    <!-- 질문 작성 영역 -->
+    <div class="write-card">
+      <div class="input-row">
+        <input type="text" id="authorInput" class="input-text" placeholder="닉네임 (기본: 익명)" maxlength="10">
+        <select id="tagSelect" class="category-select">
+          <option value="소개팅/연애">소개팅/연애</option>
+          <option value="술자리/친목">술자리/친목</option>
+          <option value="직장/스몰토크">직장/스몰토크</option>
+          <option value="만약에/상상">만약에/상상</option>
+          <option value="기타/엉뚱">기타/엉뚱</option>
+        </select>
+      </div>
+      <textarea id="questionInput" class="input-textarea" placeholder="여기에 대화 질문을 입력해주세요. (예: 주말에 넷플릭스 볼 때 혼자 먹기 가장 완벽한 야식은?)" maxlength="150"></textarea>
+      <button type="button" id="submitBtn" class="submit-btn">✨ 센스 질문 등록하기</button>
+    </div>
+
+    <!-- 실시간 질문 목록 -->
+    <div class="feed-header">
+      <span>🔥 실시간 참여 질문</span>
+      <span id="questionCount" style="color: #6366f1;">0개</span>
+    </div>
+    
+    <div id="feedList" class="feed-list">
+      <div style="text-align: center; color: #94a3b8; padding: 40px 0;">질문을 불러오는 중입니다...</div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">📋 질문이 복사되었습니다!</div>
+
+  <script>
+    // 1. Firebase 설정 (발급받은 실제 키 적용)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBTrFhWyG8V6s6-7ZvtyfM8rVLMaI0Pqs0",
+      authDomain: "talkpick-daa3c.firebaseapp.com",
+      projectId: "talkpick-daa3c",
+      storageBucket: "talkpick-daa3c.firebasestorage.app",
+      messagingSenderId: "549118655031",
+      appId: "1:549118655031:web:0d0d0e6899a450b77bddb2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const authorInput = document.getElementById('authorInput');
+    const tagSelect = document.getElementById('tagSelect');
+    const questionInput = document.getElementById('questionInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const feedList = document.getElementById('feedList');
+    const countEl = document.getElementById('questionCount');
+    const toast = document.getElementById('toast');
+
+    // 2. 질문 등록하기
+    submitBtn.addEventListener('click', async () => {
+      const question = questionInput.value.trim();
+      const author = authorInput.value.trim() || '익명의 토커';
+      const tag = tagSelect.value;
+
+      if (!question) {
+        alert('질문 내용을 입력해주세요!');
+        questionInput.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '등록 중...';
+
+      try {
+        await db.collection('user_questions').add({
+          author: author,
+          tag: tag,
+          question: question,
+          likes: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        questionInput.value = '';
+        authorInput.value = '';
+        showToast('🎉 센스 있는 질문이 등록되었습니다!');
+      } catch (e) {
+        console.error(e);
+        alert('질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '✨ 센스 질문 등록하기';
+      }
+    });
+
+    // 3. 실시간 질문 목록 불러오기 (onSnapshot)
+    db.collection('user_questions')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot((snapshot) => {
+        countEl.textContent = `${snapshot.size}개`;
+
+        if (snapshot.empty) {
+          feedList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 40px 0;">아직 등록된 질문이 없습니다.<br>첫 번째 질문의 주인공이 되어보세요!</div>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const docId = doc.id;
+          const isLiked = localStorage.getItem('liked_' + docId) === 'true';
+
+          html += `
+            <div class="feed-item">
+              <div class="feed-item-top">
+                <span class="feed-badge">${escapeHtml(data.tag || '스몰토크')}</span>
+                <span class="feed-author">${escapeHtml(data.author || '익명')}</span>
+              </div>
+              <div class="feed-content">${escapeHtml(data.question || '')}</div>
+              <div class="feed-actions">
+                <button type="button" class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${docId}', ${data.likes || 0})">
+                  ❤️ <span>${data.likes || 0}</span>
+                </button>
+                <button type="button" class="action-btn" onclick="copyFeedText('${escapeHtml(data.question)}')">
+                  📋 복사
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        feedList.innerHTML = html;
+      });
+
+    // 4. 공감(하트) 누르기
+    window.toggleLike = async function(docId, currentLikes) {
+      const key = 'liked_' + docId;
+      if (localStorage.getItem(key) === 'true') {
+        showToast('이미 공감한 질문입니다!');
+        return;
+      }
+
+      localStorage.setItem(key, 'true');
+      try {
+        await db.collection('user_questions').doc(docId).update({
+          likes: firebase.firestore.FieldValue.increment(1)
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    // 5. 질문 복사하기
+    window.copyFeedText = function(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 질문이 복사되었습니다!');
+      });
+    };
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
