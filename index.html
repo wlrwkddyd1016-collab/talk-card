@@ -364,6 +364,9 @@
       100% { transform: translateX(-50%); }
     }
   </style>
+  <!-- 파이어베이스 DB 연동 -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <!-- 📢 최상단 실시간 롤링 공지 전광판 -->
@@ -427,7 +430,43 @@
     <p>
       <a href="./privacy.html">개인정보처리방침 및 이용안내</a> | <a href="./mbti.html">MBTI별 질문 모음</a>
     </p>
-    <p style="margin-top: 8px;">© 2026 침묵 브레이커 (SmallTalk Web). All rights reserved.</p>
+    <p id="adminTrigger" style="cursor: pointer; user-select: none;" title="관리자">© 2026 침묵 브레이커 (SmallTalk Web). All rights reserved.</p>
+    <!-- 🔒 관리자 관제 모달 창 -->
+<div id="adminModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+  <div style="background: #0f172a; border: 1px solid #334155; border-radius: 20px; width: 100%; max-width: 360px; padding: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); color: #f8fafc; font-family: sans-serif;">
+    
+    <!-- 헤더 -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #38bdf8;">📊 토크픽 관리자 센터</h3>
+      <button id="closeAdminBtn" type="button" style="background: none; border: none; color: #94a3b8; font-size: 1.2rem; cursor: pointer;">✕</button>
+    </div>
+
+    <!-- 1. 보안 코드 입력 뷰 -->
+    <div id="adminAuthView">
+      <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 12px;">보안 인증 코드를 입력하세요.</p>
+      <input type="password" id="adminCodeInput" placeholder="관리자 코드 입력" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #1e293b; color: #ffffff; font-size: 0.95rem; box-sizing: border-box; outline: none; margin-bottom: 12px;">
+      <button type="button" id="adminLoginBtn" style="width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">인증 확인</button>
+    </div>
+
+    <!-- 2. 방문자 수 통계 뷰 (인증 완료 시 노출) -->
+    <div id="adminStatsView" style="display: none;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+        <div style="background: #1e293b; padding: 14px; border-radius: 12px; text-align: center; border: 1px solid #334155;">
+          <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">오늘 방문자</div>
+          <div id="statToday" style="font-size: 1.4rem; font-weight: 800; color: #38bdf8;">-</div>
+        </div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 12px; text-align: center; border: 1px solid #334155;">
+          <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">누적 총 방문자</div>
+          <div id="statTotal" style="font-size: 1.4rem; font-weight: 800; color: #4ade80;">-</div>
+        </div>
+      </div>
+      <div style="background: #1e293b; padding: 12px 14px; border-radius: 12px; font-size: 0.8rem; color: #94a3b8; border: 1px solid #334155; text-align: center;">
+        💡 새로고침 중복 방지가 적용되어 실제 순방문 기준으로 카운트됩니다.
+      </div>
+    </div>
+
+  </div>
+</div>
   </footer>
 <!-- 전체 질문 모달 팝업창 구조 (UI 개선 및 버그 수정) -->
 <div id="allQuestionsModal" class="modal-backdrop" style="display: none;">
@@ -881,6 +920,105 @@
   // URL 주소 끝에 #image가 있거나 MBTI 페이지에서 넘어왔을 때 자동 실행
   if (window.location.hash === '#image') {
     setTimeout(switchToImageMode, 150);
+  }
+    // --- [실시간 방문자 수 집계 및 관리자 관제 로직] ---
+  const SITE_ADMIN_CODE = "ksa9926"; // 💡 사용할 관리자 코드를 입력하세요
+
+  // 1. Firebase 초기화 (중복 초기화 방지)
+  const fbConfig = {
+    apiKey: "AIzaSyBTrFhWyG8V6s6-7ZvtyfM8rVLMaI0Pqs0",
+    authDomain: "talkpick-daa3c.firebaseapp.com",
+    projectId: "talkpick-daa3c",
+    storageBucket: "talkpick-daa3c.firebasestorage.app",
+    messagingSenderId: "549118655031",
+    appId: "1:549118655031:web:0d0d0e6899a450b77bddb2"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(fbConfig);
+  }
+  const statDb = firebase.firestore();
+
+  // 2. 방문자 수 카운트 (새로고침 도배 방지: 브라우저 세션당 1회 집계)
+  async function countVisitor() {
+    try {
+      const now = new Date();
+      const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const sessionKey = `visited_${dateKey}`;
+
+      if (!sessionStorage.getItem(sessionKey)) {
+        sessionStorage.setItem(sessionKey, "true");
+        const docRef = statDb.collection('site_analytics').doc('visitors');
+
+        await docRef.set({
+          total: firebase.firestore.FieldValue.increment(1),
+          [dateKey]: firebase.firestore.FieldValue.increment(1)
+        }, { merge: true });
+      }
+    } catch (e) {
+      console.error("통계 집계 오류:", e);
+    }
+  }
+  countVisitor();
+
+  // 3. 관리자 모달 제어
+  const adminTrigger = document.getElementById('adminTrigger');
+  const adminModal = document.getElementById('adminModal');
+  const closeAdminBtn = document.getElementById('closeAdminBtn');
+  const adminLoginBtn = document.getElementById('adminLoginBtn');
+  const adminCodeInput = document.getElementById('adminCodeInput');
+  const adminAuthView = document.getElementById('adminAuthView');
+  const adminStatsView = document.getElementById('adminStatsView');
+  const statToday = document.getElementById('statToday');
+  const statTotal = document.getElementById('statTotal');
+
+  if (adminTrigger) {
+    adminTrigger.addEventListener('click', () => {
+      adminModal.style.display = 'flex';
+      adminCodeInput.value = '';
+      adminCodeInput.focus();
+    });
+  }
+
+  if (closeAdminBtn) {
+    closeAdminBtn.addEventListener('click', () => {
+      adminModal.style.display = 'none';
+    });
+  }
+
+  // 관리자 코드 인증
+  if (adminLoginBtn) {
+    adminLoginBtn.addEventListener('click', async () => {
+      const inputCode = adminCodeInput.value.trim().toLowerCase();
+      if (inputCode !== SITE_ADMIN_CODE.toLowerCase()) {
+        alert("인증 코드가 일치하지 않습니다.");
+        adminCodeInput.value = '';
+        adminCodeInput.focus();
+        return;
+      }
+
+      adminAuthView.style.display = 'none';
+      adminStatsView.style.display = 'block';
+
+      // 파이어베이스에서 실시간 방문자 수 로드
+      try {
+        const now = new Date();
+        const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const doc = await statDb.collection('site_analytics').doc('visitors').get();
+
+        if (doc.exists) {
+          const data = doc.data();
+          statToday.textContent = (data[dateKey] || 0).toLocaleString() + '명';
+          statTotal.textContent = (data.total || 0).toLocaleString() + '명';
+        } else {
+          statToday.textContent = '1명';
+          statTotal.textContent = '1명';
+        }
+      } catch (err) {
+        statToday.textContent = '조회 실패';
+        statTotal.textContent = '조회 실패';
+      }
+    });
   }
   </script>
 </body>
