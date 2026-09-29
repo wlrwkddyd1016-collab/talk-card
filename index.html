@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- [기본 인코딩 및 모바일 반응형 뷰포트 설정] -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- [SEO 검색엔진 최적화 태그] -->
+  <title>스몰토크 & 밸런스 질문 생성기 | 어색한 침묵을 깨는 대화 치트키</title>
+  <meta name="description" content="소개팅, 첫 만남, 회식, 술자리, 심화 대화에서 어색한 침묵을 단숨에 깨주는 센스 있는 질문 뽑기 웹 서비스입니다.">
+  <meta name="keywords" content="스몰토크, 아이스브레이킹, 소개팅대화주제, 회식질문, 밸런스게임, 술자리게임, 대화주제">
+  <meta name="author" content="스몰토크 아카이브">
+
+  <!-- [SNS 공유 미리보기 Open Graph 태그] -->
+  <meta property="og:title" content="스몰토크 & 밸런스 질문 생성기">
+  <meta property="og:description" content="어색한 침묵 끝! 상황별 센스 있는 질문으로 대화를 바로 이어가보세요.">
+  <meta property="og:type" content="website">
+
+  <style>
+    /* [1. 전체 레이아웃 & 테마 스타일] */
+    :root {
+      --primary: #4f46e5;         /* 메인 포인트 인디고 색상 */
+      --primary-hover: #4338ca;   /* 버튼 호버 색상 */
+      --bg-color: #f8fafc;        /* 눈이 편안한 밝은 회색 배경 */
+      --card-bg: #ffffff;         /* 질문 카드 배경 */
+      --text-main: #0f172a;       /* 메인 본문 텍스트 색상 */
+      --text-sub: #64748b;        /* 보조 텍스트 색상 */
+      --border-color: #e2e8f0;    /* 얇은 경계선 색상 */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Segoe UI", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 16px;
+    }
+
+    /* [2. 상단 헤더 영역] */
+    header {
+      text-align: center;
+      margin-top: 16px;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+
+    /* [3. 카테고리 탭 버튼 영역] */
+    .category-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 520px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--border-color);
+      background-color: #ffffff;
+      color: var(--text-sub);
+      padding: 10px 16px;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    /* [4. 질문 표시 카드 영역] */
+    main {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .question-card {
+      width: 100%;
+      min-height: 250px;
+      background-color: var(--card-bg);
+      border-radius: 24px;
+      padding: 32px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .card-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      background-color: #eef2ff;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      margin-bottom: 18px;
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.55;
+      color: var(--text-main);
+      word-break: keep-all;
+      margin-bottom: 18px;
+    }
+
+    .card-tag {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    /* [5. 질문 뽑기 메인 액션 버튼] */
+    .action-btn-area {
+      width: 100%;
+      margin-top: 24px;
+    }
+
+    .next-btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 16px 0;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .next-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .next-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* [6. 하단 푸터 (SEO & 애드센스 심사용 정보)] */
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    footer a {
+      color: var(--text-sub);
+      text-decoration: underline;
+      margin: 0 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 헤더: 서비스 소개 문구 -->
+  <header>
+    <h1>💬 침묵 브레이커</h1>
+    <p>어색한 공기를 깨뜨리는 마법의 질문 카드</p>
+  </header>
+
+  <!-- 2. 카테고리 선택 탭 버튼 -->
+  <nav class="category-tabs" aria-label="카테고리 선택">
+    <button class="tab-btn active" data-category="all">전체</button>
+    <button class="tab-btn" data-category="dating">소개팅/첫만남</button>
+    <button class="tab-btn" data-category="work">직장/회식</button>
+    <button class="tab-btn" data-category="party">술자리/친목</button>
+    <button class="tab-btn" data-category="deep">심화대화</button>
+  </nav>
+
+  <!-- 3. 메인 콘텐츠: 질문 카드와 뽑기 버튼 -->
+  <main>
+    <article class="question-card" id="questionCard">
+      <span class="card-badge" id="categoryBadge">카테고리</span>
+      <h2 class="question-text" id="questionText">질문 데이터를 불러오는 중입니다...</h2>
+      <span class="card-tag" id="tagText">#로딩중</span>
+    </article>
+
+    <div class="action-btn-area">
+      <button class="next-btn" id="nextBtn">🎲 다른 질문 뽑기</button>
+    </div>
+  </main>
+
+  <!-- 4. 푸터: 애드센스 심사 통과를 위한 필수 정적 텍스트 안내 -->
+  <footer>
+    <p>모임, 소개팅, 회식 자리에서 유쾌한 대화를 시작할 수 있도록 돕는 무료 대화 질문 생성기입니다.</p>
+    <p>© 2026 침묵 브레이커 (SmallTalk Web). All rights reserved.</p>
+  </footer>
+
+  <!-- [7. 바닐라 자바스크립트 동작 로직] -->
+  <script>
+    // 1. 상태 관리 변수 정의
+    let allQuestions = [];       // questions.json 전체 데이터를 저장할 배열
+    let currentCategory = 'all'; // 현재 선택된 카테고리 (기본값: 전체)
+    let lastQuestionId = null;   // 바로 이전에 표시된 질문 ID (연속 중복 출력 방지)
+
+    // DOM 요소 캐싱
+    const badgeEl = document.getElementById('categoryBadge');
+    const questionEl = document.getElementById('questionText');
+    const tagEl = document.getElementById('tagText');
+    const nextBtn = document.getElementById('nextBtn');
+    const cardEl = document.getElementById('questionCard');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+
+    // 2. 같은 저장소에 있는 questions.json 불러오기
+    async function loadQuestions() {
+      try {
+        const response = await fetch('./questions.json');
+        if (!response.ok) {
+          throw new Error('질문 데이터 파일을 찾을 수 없습니다.');
+        }
+        allQuestions = await response.json();
+        showRandomQuestion(); // 데이터 로드 완료 즉시 첫 번째 질문 표시
+      } catch (error) {
+        questionEl.textContent = '질문 데이터를 불러오는 데 실패했습니다.';
+        tagEl.textContent = 'questions.json 파일이 같은 저장소에 있는지 확인해주세요.';
+        console.error(error);
+      }
+    }
+
+    // 3. 현재 카테고리에 맞는 질문을 무작위로 추출하여 화면에 표시
+    function showRandomQuestion() {
+      // 선택된 카테고리에 따라 질문 필터링
+      const pool = currentCategory === 'all'
+        ? allQuestions
+        : allQuestions.filter(item => item.category === currentCategory);
+
+      if (pool.length === 0) {
+        questionEl.textContent = '해당 카테고리에 질문이 없습니다.';
+        return;
+      }
+
+      // 방금 본 질문이 연속으로 다시 나오지 않도록 처리 (질문이 2개 이상일 때)
+      let availablePool = pool;
+      if (pool.length > 1 && lastQuestionId !== null) {
+        availablePool = pool.filter(item => item.id !== lastQuestionId);
+      }
+
+      // 무작위 인덱스 번호 추출
+      const randomIndex = Math.floor(Math.random() * availablePool.length);
+      const selected = availablePool[randomIndex];
+
+      // 최근 표시된 ID 갱신
+      lastQuestionId = selected.id;
+
+      // 부드러운 카드 전환 효과 (페이드)
+      cardEl.style.opacity = '0';
+      cardEl.style.transform = 'translateY(6px)';
+
+      setTimeout(() => {
+        badgeEl.textContent = selected.categoryName;
+        questionEl.textContent = selected.question;
+        tagEl.textContent = selected.tag;
+
+        cardEl.style.opacity = '1';
+        cardEl.style.transform = 'translateY(0)';
+      }, 150);
+    }
+
+    // 4. 카테고리 탭 클릭 이벤트 연결
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // 활성화된 탭 스타일 토글
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // 선택된 카테고리 반영 후 즉시 새로운 질문 뽑기
+        currentCategory = button.getAttribute('data-category');
+        showRandomQuestion();
+      });
+    });
+
+    // 5. '다른 질문 뽑기' 버튼 클릭 이벤트 연결
+    nextBtn.addEventListener('click', showRandomQuestion);
+
+    // 6. 페이지가 열리면 데이터 로딩 시작
+    loadQuestions();
+  </script>
+</body>
+</html>
