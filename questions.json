@@ -208,5 +208,495 @@
     "categoryName": "심화대화",
     "question": "인간관계에서 '이 선을 넘으면 조용히 마음의 문을 닫게 된다'는 나만의 레드라인은?",
     "tag": "#인간관계기준 #신뢰와경계"
+  },
+  {
+    "id": 31,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "카톡 프로필 사진 고를 때 나만의 기준이 있다면? 솔직히 몇 장 중에 골랐어요?",
+    "tag": "#프사고르기 #솔직토크"
+  },
+  {
+    "id": 32,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "약속 잡을 때 '아무거나'라고 해놓고 막상 메뉴 제안하면 퇴짜 놓은 적 있어요?",
+    "tag": "#아무거나금지 #메뉴선택"
+  },
+  {
+    "id": 33,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "지금 폰 배경화면이 뭔지 공개할 수 있어요? 공개 불가라면 이유는?",
+    "tag": "#폰배경 #비밀공개"
+  },
+  {
+    "id": 34,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "첫 만남에서 '이 사람 느낌 온다' 싶은 순간은 어떤 때예요?",
+    "tag": "#첫인상 #느낌왔다"
+  },
+  {
+    "id": 35,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "나는 이런 거에 은근히 웃음이 터진다 하는 소소한 포인트가 있다면?",
+    "tag": "#웃음코드 #소소한취향"
+  },
+  {
+    "id": 36,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "연락 텀은 어느 정도가 적당하다고 생각해요? 읽씹파 vs 칼답파, 어느 쪽이에요?",
+    "tag": "#연락텀 #읽씹칼답"
+  },
+  {
+    "id": 37,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "여행 가서 계획형인가요, 즉흥형인가요? 같이 가면 어떤 조합이 제일 잘 맞을까요?",
+    "tag": "#계획vs즉흥 #여행스타일"
+  },
+  {
+    "id": 38,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "데이트 코스 짤 때 '이것만은 꼭 넣는다' 하는 필수 요소가 있어요?",
+    "tag": "#데이트코스 #필수요소"
+  },
+  {
+    "id": 39,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "친구들이 나를 소개한다면 뭐라고 말할 것 같아요? 팩트 폭행 허용!",
+    "tag": "#타인의시선 #팩폭"
+  },
+  {
+    "id": 40,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "요즘 푹 빠져서 하루 중 제일 오래 보는 콘텐츠 하나만 공개해줄래요?",
+    "tag": "#요즘꽂힌것 #알고리즘"
+  },
+  {
+    "id": 41,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "MBTI 빼고, 나를 설명하는 세 단어를 고른다면 뭐예요?",
+    "tag": "#MBTI금지 #나를표현"
+  },
+  {
+    "id": 42,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "밥 먹을 때 속도가 빠른 편이에요, 느린 편이에요? 상대 속도에 맞춰주는 편인가요?",
+    "tag": "#식사속도 #배려력"
+  },
+  {
+    "id": 43,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "이 정도면 꽤 잘한다 싶은 자잘한 특기가 있어요? 예를 들면 라면 물 완벽하게 맞추기!",
+    "tag": "#숨은특기 #자랑타임"
+  },
+  {
+    "id": 44,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "주말에 약속 없으면 눈 뜨고 제일 먼저 하는 일은 뭐예요?",
+    "tag": "#주말루틴 #집순이집돌이"
+  },
+  {
+    "id": 45,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "소개팅 나가기 전에 제일 신경 쓰는 건 옷, 헤어, 마인드 중 어떤 거예요?",
+    "tag": "#소개팅준비 #신경쓰는것"
+  },
+  {
+    "id": 46,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "연애할 때 이건 양보 못 한다 하는 나만의 사소한 룰이 있어요?",
+    "tag": "#연애룰 #양보불가"
+  },
+  {
+    "id": 47,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "오늘 나오기 전에 지인들에게 어떤 응원 메시지를 받았어요?",
+    "tag": "#응원메시지 #긴장풀기"
+  },
+  {
+    "id": 48,
+    "category": "dating",
+    "categoryName": "소개팅/첫만남",
+    "question": "이상형 말고, 이런 사람에게는 이상하게 끌린다 하는 의외의 포인트는 뭐예요?",
+    "tag": "#의외의끌림 #이상형대신"
+  },
+  {
+    "id": 49,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "퇴사 욕구가 제일 강하게 올라오는 요일과 시간대는 언제예요?",
+    "tag": "#퇴사욕구 #월요병"
+  },
+  {
+    "id": 50,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "회사 탕비실에서 제일 먼저 사라지는 간식은 뭐라고 생각해요?",
+    "tag": "#탕비실 #간식전쟁"
+  },
+  {
+    "id": 51,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "회식 메뉴로 '이것만은 제발 피하자' 하는 게 있다면?",
+    "tag": "#회식메뉴 #제발피하자"
+  },
+  {
+    "id": 52,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "점심 메뉴 고르기 지옥에서 탈출하는 나만의 방법이 있어요?",
+    "tag": "#점심메뉴 #결정장애"
+  },
+  {
+    "id": 53,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "지금까지 받아본 최고의 상사 한마디와 최악의 한마디를 꼽는다면?",
+    "tag": "#상사어록 #명언과망언"
+  },
+  {
+    "id": 54,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "월급날 통장 확인하고 제일 먼저 드는 생각은? 스쳐 지나가는 게 느껴지죠?",
+    "tag": "#월급날 #텅장"
+  },
+  {
+    "id": 55,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "재택근무와 출근, 딱 하나만 고른다면? 이유도 함께 알려주세요!",
+    "tag": "#재택vs출근 #근무선호"
+  },
+  {
+    "id": 56,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "회사에서 나만 아는 명당 자리나 꿀팁이 있다면 이 자리에서만 공개해주세요.",
+    "tag": "#회사꿀팁 #명당"
+  },
+  {
+    "id": 57,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "복권 1등에 당첨되면 회사 계속 다닌다 vs 바로 퇴사, 솔직히 어느 쪽이에요?",
+    "tag": "#로또당첨 #퇴사각"
+  },
+  {
+    "id": 58,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "업무 메신저에서 'ㅎㅎ' 하나 붙일지 말지 고민해본 적 있어요? 톤 조절 노하우는?",
+    "tag": "#메신저눈치 #톤앤매너"
+  },
+  {
+    "id": 59,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "야근 확정된 날 사기 충전용으로 시키는 저녁 메뉴는 뭐예요?",
+    "tag": "#야근메뉴 #사기충전"
+  },
+  {
+    "id": 60,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "신입 때의 나에게 딱 한 가지 조언을 해준다면 뭐라고 하고 싶어요?",
+    "tag": "#신입시절 #타임머신"
+  },
+  {
+    "id": 61,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "회의 시간에 딴생각할 때 주로 무슨 생각을 해요?",
+    "tag": "#회의시간 #딴생각"
+  },
+  {
+    "id": 62,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "우리 팀 분위기를 영화 장르로 표현한다면 어떤 장르일까요?",
+    "tag": "#팀분위기 #영화장르"
+  },
+  {
+    "id": 63,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "출근길에 나를 버티게 해주는 플레이리스트의 첫 곡은 뭐예요?",
+    "tag": "#출근길 #플레이리스트"
+  },
+  {
+    "id": 64,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "회사 생활하면서 나도 모르게 늘어난 스킬이 있다면? 예를 들면 표정 관리!",
+    "tag": "#직장인스킬 #표정관리"
+  },
+  {
+    "id": 65,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "이직 제안이 왔을 때 연봉, 워라밸, 사람 중 제일 먼저 보는 건 뭐예요?",
+    "tag": "#이직고민 #워라밸"
+  },
+  {
+    "id": 66,
+    "category": "work",
+    "categoryName": "직장/회식",
+    "question": "갑자기 휴가 3일이 주어진다면 어디서 뭘 하고 싶어요?",
+    "tag": "#깜짝휴가 #힐링"
+  },
+  {
+    "id": 67,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "술 마시면 나오는 숨은 텐션 유형은? 조용해지기, 말 많아지기, 노래 부르기?",
+    "tag": "#술버릇 #텐션유형"
+  },
+  {
+    "id": 68,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "인생 최고의 안주 조합을 꼽는다면? 이건 논쟁 불가입니다.",
+    "tag": "#안주조합 #인생안주"
+  },
+  {
+    "id": 69,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "2차로 가고 싶은 곳은 노래방, 포차, 편의점 벤치 중 어디예요?",
+    "tag": "#2차선택 #뒷풀이"
+  },
+  {
+    "id": 70,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "술자리에서 한 말 중 다음 날 제일 후회되거나 웃겼던 게 있다면?",
+    "tag": "#술자리흑역사 #다음날후회"
+  },
+  {
+    "id": 71,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "친구들 사이에서 내 역할은? 분위기메이커, 리액션 담당, 총무, 택시 호출 담당?",
+    "tag": "#친구역할 #분위기메이커"
+  },
+  {
+    "id": 72,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "노래방 애창곡 중에서 분위기를 확 살리는 필살기 한 곡만 공개해봐요!",
+    "tag": "#노래방 #애창곡"
+  },
+  {
+    "id": 73,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "지금까지 마신 술 중 인생 술은 뭐예요? 그 술에 얽힌 사연도 궁금해요.",
+    "tag": "#인생술 #사연"
+  },
+  {
+    "id": 74,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "술 게임 중 '이건 진짜 재밌다' 하나, '이건 제발 하지 말자' 하나씩 꼽는다면?",
+    "tag": "#술게임 #호불호"
+  },
+  {
+    "id": 75,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "친구가 갑자기 '나 사실 할 말 있는데'라고 하면 제일 먼저 드는 생각은?",
+    "tag": "#심장쿵 #친구고백"
+  },
+  {
+    "id": 76,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "모임 끝나고 집에 가는 길에 꼭 하는 행동이 있어요? 예를 들면 해장 라면 검색!",
+    "tag": "#귀갓길 #해장"
+  },
+  {
+    "id": 77,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "치킨은 양념 vs 후라이드 vs 반반, 그리고 무 먹는 타이밍까지 밝혀주세요.",
+    "tag": "#치킨논쟁 #먹는순서"
+  },
+  {
+    "id": 78,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "내 주변에서 벌어진 가장 웃긴 술자리 목격담 하나만 풀어봐요. 실명은 제외로!",
+    "tag": "#술자리썰 #웃음보장"
+  },
+  {
+    "id": 79,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "여기 있는 사람 중에 여행 같이 가면 제일 잘 맞을 것 같은 사람은? 이유도 함께!",
+    "tag": "#여행메이트 #지목타임"
+  },
+  {
+    "id": 80,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "단톡방에 올린 말에 아무도 답이 없었던 민망한 순간, 겪어본 적 있어요?",
+    "tag": "#단톡방 #민망타임"
+  },
+  {
+    "id": 81,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "우리 모임 이름을 새로 짓는다면 뭐가 좋을까요? 센스 대결 시작!",
+    "tag": "#모임이름 #센스대결"
+  },
+  {
+    "id": 82,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "10년 전 오늘 뭐 하고 있었는지 기억나요? 기억나면 이야기해봐요.",
+    "tag": "#10년전 #추억소환"
+  },
+  {
+    "id": 83,
+    "category": "party",
+    "categoryName": "술자리/친목",
+    "question": "남들은 모르는 나만의 이상한 습관이나 징크스가 있다면 뭐예요?",
+    "tag": "#징크스 #이상한습관"
+  },
+  {
+    "id": 84,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "10년 뒤에 어떤 모습으로 살고 있으면 '잘 살았다' 싶을 것 같아요?",
+    "tag": "#10년후 #잘산다는것"
+  },
+  {
+    "id": 85,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "지금까지 살면서 가장 큰 전환점이 된 사건이나 만남은 뭐였어요?",
+    "tag": "#인생전환점 #터닝포인트"
+  },
+  {
+    "id": 86,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "돈, 시간, 건강 중 하나를 무한대로 받을 수 있다면 무엇을 고르겠어요?",
+    "tag": "#무한선택 #가치관"
+  },
+  {
+    "id": 87,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "요즘 나를 가장 지치게 하는 것과 가장 충전시켜주는 것은 뭐예요?",
+    "tag": "#번아웃 #충전"
+  },
+  {
+    "id": 88,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "어릴 때 되고 싶었던 어른의 모습과 지금의 나는 얼마나 닮았나요?",
+    "tag": "#어릴적꿈 #지금의나"
+  },
+  {
+    "id": 89,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "뒤늦게라도 '고마웠다'고 전하고 싶은 사람이 있다면 누구예요?",
+    "tag": "#고마운사람 #늦은인사"
+  },
+  {
+    "id": 90,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "실패했지만 지금 생각하면 '해봐서 다행이다' 싶은 경험이 있어요?",
+    "tag": "#실패담 #해봐서다행"
+  },
+  {
+    "id": 91,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "나를 가장 나답게 만드는 가치나 신념이 하나 있다면 뭐예요?",
+    "tag": "#가치관 #나다움"
+  },
+  {
+    "id": 92,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "남들이 보는 나와 진짜 나 사이의 가장 큰 차이는 뭘까요?",
+    "tag": "#겉과속 #진짜나"
+  },
+  {
+    "id": 93,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "인생에서 딱 하루만 다시 돌아갈 수 있다면 언제로 가고 싶어요?",
+    "tag": "#돌아가고싶은날 #추억"
+  },
+  {
+    "id": 94,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "행복의 기준이 예전과 달라졌다고 느낀 순간이 있나요?",
+    "tag": "#행복기준 #변화"
+  },
+  {
+    "id": 95,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "완벽한 하루를 설계할 수 있다면 아침부터 밤까지 어떻게 보내고 싶어요?",
+    "tag": "#완벽한하루 #일상설계"
+  },
+  {
+    "id": 96,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "누군가와 가까워졌다고 느끼는 순간은 어떤 때예요? 나만의 기준이 있나요?",
+    "tag": "#친밀감 #관계"
+  },
+  {
+    "id": 97,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "요즘 가장 하고 싶은데 미루고 있는 일이 뭐예요? 무엇이 발목을 잡고 있나요?",
+    "tag": "#미루는일 #용기"
+  },
+  {
+    "id": 98,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "살면서 들은 말 중에 지금까지도 기억에 남는 한마디는 뭐예요?",
+    "tag": "#기억에남는말 #한마디"
+  },
+  {
+    "id": 99,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "나이 들수록 포기하게 된 것과 오히려 더 소중해진 것은 뭐예요?",
+    "tag": "#나이듦 #소중한것"
+  },
+  {
+    "id": 100,
+    "category": "deep",
+    "categoryName": "심화대화",
+    "question": "오늘의 나에게 스스로 점수를 준다면 몇 점이고, 그 이유는 뭐예요?",
+    "tag": "#오늘의점수 #셀프칭찬"
   }
 ]
