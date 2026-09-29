@@ -284,11 +284,154 @@
     <div class="button-group">
       <button class="next-btn" id="nextBtn">🎲 다른 질문 뽑기</button>
       <button class="copy-btn" id="copyBtn">📋 질문 복사하기</button>
+      <button id="openAllModalBtn" class="copy-btn" type="button" style="margin-top: 10px; background-color: #f8fafc; color: #475569; border: 1.5px solid #cbd5e1;">📜 전체 질문 모아보기</button>
     </div>
   </main>
 
   <!-- 5. 푸터: 애드센스 규정 링크 -->
   <footer>
+    <!-- 전체 질문 모달 팝업창 구조 -->
+<div id="allQuestionsModal" class="modal-backdrop" style="display: none;">
+  <div class="modal-container">
+    
+    <!-- 모달 상단 헤더 -->
+    <div class="modal-header">
+      <h3 style="margin: 0; font-size: 1.15rem; color: #1e293b; font-weight: 700;">📜 MBTI 전체 질문 모아보기</h3>
+      <button id="closeAllModalBtn" type="button" class="modal-close-btn">✕</button>
+    </div>
+
+    <!-- MBTI 유형 필터 버튼 (가로 스크롤) -->
+    <div id="modalFilterTabs" class="modal-filter-tabs">
+    </div>
+
+    <!-- 질문 목록 스크롤 영역 -->
+    <div id="modalQuestionList" class="modal-question-list">
+    </div>
+
+  </div>
+</div>
+
+<!-- 모달 디자인 스타일 -->
+<style>
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .modal-container {
+    background: #ffffff;
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    border-radius: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.2s ease-out;
+  }
+
+  @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0;
+  }
+
+  .modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .modal-close-btn:hover {
+    color: #334155;
+  }
+
+  .modal-filter-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 14px 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .modal-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modal-filter-btn {
+    padding: 7px 15px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 0.85rem;
+    color: #64748b;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+  }
+  .modal-filter-btn:hover {
+    background: #f1f5f9;
+    color: #334155;
+  }
+  .modal-filter-btn.active {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+    font-weight: 600;
+  }
+
+  .modal-question-list {
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 2px 8px 2px;
+  }
+
+  .modal-q-card {
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .modal-q-card:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+</style>
     <p>16가지 성격유형의 심리와 가치관을 탐색할 수 있는 무료 대화 카드입니다.</p>
     <p>
       <a href="./privacy.html">개인정보처리방침</a> | 
@@ -400,6 +543,119 @@
 
     // 데이터 로드 실행
     loadMbtiQuestions();
+    // --- [MBTI 전체 질문 모아보기 모달 동작 로직] ---
+  const allModal = document.getElementById('allQuestionsModal');
+  const openModalBtn = document.getElementById('openAllModalBtn');
+  const closeModalBtn = document.getElementById('closeAllModalBtn');
+  const modalList = document.getElementById('modalQuestionList');
+  const modalTabs = document.getElementById('modalFilterTabs');
+
+  let modalSelectedMbti = currentMbti || 'INTJ';
+  let modalFilteredQuestions = [];
+
+  // 16개 MBTI 목록
+  const mbtiList = [
+    '전체',
+    'INTJ', 'INTP', 'ENTJ', 'ENTP',
+    'INFJ', 'INFP', 'ENFJ', 'ENFP',
+    'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ',
+    'ISTP', 'ISFP', 'ESTP', 'ESFP'
+  ];
+
+  // 모달 열기 (현재 선택 중인 MBTI 유형 질문을 기본으로 표시)
+  if (openModalBtn) {
+    openModalBtn.addEventListener('click', () => {
+      allModal.style.display = 'flex';
+      modalSelectedMbti = currentMbti || '전체';
+      renderModalMbtiTabs();
+      window.filterModalQuestions(modalSelectedMbti);
+    });
+  }
+
+  // 모달 닫기
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+      allModal.style.display = 'none';
+    });
+  }
+  if (allModal) {
+    allModal.addEventListener('click', (e) => {
+      if (e.target === allModal) allModal.style.display = 'none';
+    });
+  }
+
+  // 상단 MBTI 필터 탭 렌더링
+  function renderModalMbtiTabs() {
+    if (!modalTabs) return;
+    modalTabs.innerHTML = mbtiList.map(type => `
+      <button type="button" class="modal-filter-btn ${type === modalSelectedMbti ? 'active' : ''}" onclick="window.filterModalQuestions('${type}')">
+        ${type}
+      </button>
+    `).join('');
+  }
+
+  // MBTI 유형별 질문 목록 필터링 및 렌더링
+  window.filterModalQuestions = function(type) {
+    modalSelectedMbti = type;
+    renderModalMbtiTabs();
+
+    if (!mbtiQuestions || mbtiQuestions.length === 0) {
+      modalList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">질문을 불러오는 중입니다...</div>';
+      return;
+    }
+
+    modalFilteredQuestions = (type === '전체')
+      ? mbtiQuestions
+      : mbtiQuestions.filter(q => (q.mbti || q.category) === type);
+
+    if (modalFilteredQuestions.length === 0) {
+      modalList.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 20px;">해당 유형의 질문이 없습니다.</div>';
+      return;
+    }
+
+    modalList.innerHTML = modalFilteredQuestions.map((q, index) => {
+      const qText = q.question || q.text || '';
+      const qMbti = q.mbti || q.category || type;
+      const qTag = q.tag || q.tags || '';
+
+      return `
+        <div class="modal-q-card" onclick="window.selectMbtiModalCard(${index})">
+          <div style="flex: 1; text-align: left;">
+            <span style="font-size: 0.75rem; color: #4f46e5; font-weight: 700; background: #e0e7ff; padding: 2px 7px; border-radius: 6px;">${qMbti}</span>
+            <div style="font-size: 0.95rem; color: #1e293b; font-weight: 500; margin-top: 6px; line-height: 1.4;">${qText}</div>
+            <span style="font-size: 0.78rem; color: #64748b; margin-top: 4px; display: inline-block;">${qTag}</span>
+          </div>
+          <span style="font-size: 0.85rem; color: #6366f1; font-weight: 600; white-space: nowrap; padding-left: 8px;">선택 ➔</span>
+        </div>
+      `;
+    }).join('');
+  };
+
+  // 모달 목록에서 질문 선택 시 메인 카드에 즉시 반영
+  window.selectMbtiModalCard = function(index) {
+    const selected = modalFilteredQuestions[index];
+    if (!selected) return;
+
+    const qText = selected.question || selected.text || '';
+    const qMbti = selected.mbti || selected.category || currentMbti;
+    const qTag = selected.tag || selected.tags || '';
+
+    if (badgeEl) badgeEl.textContent = qMbti;
+    if (questionEl) questionEl.textContent = qText;
+    if (tagEl) tagEl.textContent = qTag;
+    lastQuestionId = selected.id;
+
+    // 선택한 질문의 MBTI 버튼도 메인 화면에서 활성화 동기화
+    if (mbtiButtons && qMbti !== '전체') {
+      currentMbti = qMbti;
+      mbtiButtons.forEach(btn => {
+        const btnMbti = btn.getAttribute('data-mbti') || btn.textContent.trim();
+        btn.classList.toggle('active', btnMbti === qMbti);
+      });
+    }
+
+    allModal.style.display = 'none';
+  };
   </script>
 </body>
 </html>
