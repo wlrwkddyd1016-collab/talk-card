@@ -634,31 +634,45 @@
     // 질문 데이터 및 새로 만든 이미지 게임 데이터 동시 로딩
     async function loadQuestions() {
       try {
-        const [resQuestions, resImage] = await Promise.all([
-          fetch('./questions.json'),
-          fetch('./image_game.json')
-        ]);
+        const [resQuestions, resImage, resSpicy] = await Promise.all([
+        fetch('./questions.json'),
+        fetch('./image_game.json'),
+        fetch('./image_game_spicy.json')
+      ]);
 
-        if (!resQuestions.ok) {
-          throw new Error('questions.json 파일을 찾을 수 없습니다.');
-        }
+      if (!resQuestions.ok) {
+        throw new Error('questions.json 파일을 찾을 수 없습니다.');
+      }
 
-        const questionsData = await resQuestions.json();
-        let imageData = [];
+      const questionsData = await resQuestions.json();
+      let imageData = [];
+      let spicyData = [];
 
-        // 이미지 게임 파일이 정상적으로 있을 경우 질문 목록으로 변환
-        if (resImage.ok) {
-          const rawImage = await resImage.json();
-          imageData = rawImage.map((text, idx) => ({
-            id: 'img_' + (idx + 1),
-            category: 'image',
-            categoryName: '🎯 이미지 게임',
-            question: text,
-            tag: '#이미지게임 #지목토크'
-          }));
-        }
+      // 기본 이미지 게임 (35개)
+      if (resImage.ok) {
+        const rawImage = await resImage.json();
+        imageData = rawImage.map((text, idx) => ({
+          id: 'img_' + (idx + 1),
+          category: 'image',
+          categoryName: '🎯 기본 이미지 게임',
+          question: text,
+          tag: '#이미지게임 #지목토크'
+        }));
+      }
 
-        allQuestions = [...questionsData, ...imageData];
+      // 🔥 매운맛 이미지 게임 (50개)
+      if (resSpicy.ok) {
+        const rawSpicy = await resSpicy.json();
+        spicyData = rawSpicy.map((text, idx) => ({
+          id: 'spicy_' + (idx + 1),
+          category: 'spicy_image',
+          categoryName: '🔥 매운맛 이미지 게임',
+          question: text,
+          tag: '#매운맛 #지목토크'
+        }));
+      }
+
+      allQuestions = [...questionsData, ...imageData, ...spicyData];
         showRandomQuestion();
       } catch (error) {
         questionEl.textContent = '질문 데이터를 불러오는 데 실패했습니다.';
@@ -671,7 +685,7 @@
     function showRandomQuestion() {
       // '전체'일 때는 일반 대화 질문만 출력하고, '이미지 게임' 탭을 누르면 50개 이미지 질문만 출력
       const pool = currentCategory === 'all'
-        ? allQuestions.filter(item => item.category !== 'image')
+        ? allQuestions.filter(item => item.category !== 'image' && item.category !== 'spicy_image')
         : allQuestions.filter(item => item.category === currentCategory);
 
       if (pool.length === 0) {
@@ -851,58 +865,84 @@
   const categoryTabsContainer = document.querySelector('.category-tabs');
   const normalTabBtns = categoryTabsContainer ? categoryTabsContainer.querySelectorAll('.tab-btn') : [];
 
-  // 1. 이미지 게임 모드 실행 (기존 카테고리 전부 숨기고 이미지 게임 탭만 단독 표시)
-  function switchToImageMode() {
-    if (navTalkBtn) navTalkBtn.classList.remove('active');
-    if (navImageBtn) navImageBtn.classList.add('active');
+  // 1. 이미지 게임 모드 실행 (기본 탭 + 매운맛 탭 생성 및 표시)
+    function switchToImageMode() {
+      if (navTalkBtn) navTalkBtn.classList.remove('active');
+      if (navImageBtn) navImageBtn.classList.add('active');
 
-    // 중간 바의 기존 카테고리(전체, 소개팅, 직장 등) 전부 숨김 처리
-    normalTabBtns.forEach(btn => {
-      btn.style.display = 'none';
-      btn.classList.remove('active');
-    });
+      // 기존 스몰토크 카테고리 숨기기
+      normalTabBtns.forEach(btn => btn.style.display = 'none');
 
-    // 중간 바에 '🎯 이미지 게임' 탭만 단독 생성 또는 노출
-    let dynamicTab = document.getElementById('dynamicImageTab');
-    if (!dynamicTab) {
-      dynamicTab = document.createElement('button');
-      dynamicTab.id = 'dynamicImageTab';
-      dynamicTab.className = 'tab-btn active';
-      dynamicTab.type = 'button';
-      dynamicTab.textContent = '🎯 이미지 게임';
-      dynamicTab.setAttribute('data-category', 'image');
-      categoryTabsContainer.appendChild(dynamicTab);
-    } else {
-      dynamicTab.style.display = 'inline-block';
-      dynamicTab.classList.add('active');
+      // 🎯 기본 이미지 게임 버튼 생성/표시
+      let basicTab = document.getElementById('dynamicImageTab');
+      if (!basicTab) {
+        basicTab = document.createElement('button');
+        basicTab.id = 'dynamicImageTab';
+        basicTab.className = 'tab-btn active';
+        basicTab.type = 'button';
+        basicTab.textContent = '🎯 기본 이미지 게임';
+        basicTab.setAttribute('data-category', 'image');
+        basicTab.onclick = () => {
+          basicTab.classList.add('active');
+          document.getElementById('dynamicSpicyTab')?.classList.remove('active');
+          currentCategory = 'image';
+          showRandomQuestion();
+        };
+        categoryTabsContainer.appendChild(basicTab);
+      } else {
+        basicTab.style.display = 'inline-block';
+        basicTab.classList.add('active');
+      }
+
+      // 🔥 매운맛 이미지 게임 버튼 생성/표시
+      let spicyTab = document.getElementById('dynamicSpicyTab');
+      if (!spicyTab) {
+        spicyTab = document.createElement('button');
+        spicyTab.id = 'dynamicSpicyTab';
+        spicyTab.className = 'tab-btn';
+        spicyTab.type = 'button';
+        spicyTab.textContent = '🔥 매운맛 이미지 게임';
+        spicyTab.setAttribute('data-category', 'spicy_image');
+        spicyTab.onclick = () => {
+          spicyTab.classList.add('active');
+          document.getElementById('dynamicImageTab')?.classList.remove('active');
+          currentCategory = 'spicy_image';
+          showRandomQuestion();
+        };
+        categoryTabsContainer.appendChild(spicyTab);
+      } else {
+        spicyTab.style.display = 'inline-block';
+        spicyTab.classList.remove('active');
+      }
+
+      currentCategory = 'image';
+      showRandomQuestion();
     }
 
-    currentCategory = 'image';
-    showRandomQuestion();
-  }
+    // 2. 스몰토크 모드 실행 (기존 카테고리 다시 원복)
+    function switchToTalkMode() {
+      if (navImageBtn) navImageBtn.classList.remove('active');
+      if (navTalkBtn) navTalkBtn.classList.add('active');
 
-  // 2. 스몰토크 모드 실행 (기존 카테고리 다시 원복)
-  function switchToTalkMode() {
-    if (navImageBtn) navImageBtn.classList.remove('active');
-    if (navTalkBtn) navTalkBtn.classList.add('active');
+      // 숨겼던 기존 스몰토크 버튼들 다시 보이기
+      normalTabBtns.forEach(btn => {
+        btn.style.display = '';
+        if (btn.getAttribute('data-category') === 'all') {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
 
-    // 숨겼던 기존 카테고리 버튼들 다시 보이기
-    normalTabBtns.forEach(btn => {
-      btn.style.display = '';
-      if (btn.getAttribute('data-category') === 'all') {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
+      // 이미지 게임 탭 2개 숨기기
+      const basicTab = document.getElementById('dynamicImageTab');
+      if (basicTab) basicTab.style.display = 'none';
+      const spicyTab = document.getElementById('dynamicSpicyTab');
+      if (spicyTab) spicyTab.style.display = 'none';
 
-    // 이미지 게임 단독 탭 숨기기
-    const dynamicTab = document.getElementById('dynamicImageTab');
-    if (dynamicTab) dynamicTab.style.display = 'none';
-
-    currentCategory = 'all';
-    showRandomQuestion();
-  }
+      currentCategory = 'all';
+      showRandomQuestion();
+    }
 
   // 상단 탭 클릭 이벤트 연결
   if (navImageBtn) {
