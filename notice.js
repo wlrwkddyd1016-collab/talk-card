@@ -1,6 +1,6 @@
 // notice.js - 토크픽 모든 페이지 공통 실시간 롤링 공지 전광판
 (function() {
-  // 💡 [공지 문구] 모든 탭에 똑같이 흘러가는 메시지들입니다.
+  // 💡 [공지 문구] 모든 탭에 똑같이 흘러가는 메시지들
   const NOTICES = [
     "✨ 토크픽 신규 질문 및 🎯 이미지 게임 업데이트 완료!",
     "💡 마음에 드는 질문은 '질문 복사하기'로 바로 공유해보세요.",
@@ -21,7 +21,7 @@
       gap: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       overflow: hidden;
-      margin: 12px auto 16px auto;
+      margin: 12px auto 14px auto;
       box-sizing: border-box;
       max-width: 620px;
       width: 95%;
@@ -64,9 +64,9 @@
   `;
   document.head.appendChild(style);
 
-  // 2. 전광판 HTML 자동 생성 및 상단 메뉴 위에 배치
+  // 2. 전광판 HTML 자동 생성 및 상단 메뉴 '완전 바깥 위쪽'에 배치
   function renderUnifiedTicker() {
-    // index.html 등에 남아있는 기존 수동 전광판이나 중복 전광판 제거
+    // 중복 전광판 제거
     document.querySelectorAll('.notice-ticker-wrapper, .site-common-notice').forEach(el => el.remove());
 
     const wrapper = document.createElement('div');
@@ -85,17 +85,33 @@
       </div>
     `;
 
-    // 상단 탭 메뉴 바로 위에 삽입
-    const navEl = document.querySelector('.top-nav') || 
-                  document.querySelector('.nav-wrapper') || 
-                  document.querySelector('.category-tabs') || 
-                  document.querySelector('nav');
+    // 상단 네비게이션 탐색 (상단 탭 링크 기준)
+    const navLink = document.querySelector('a[href*="balance.html"], a[href*="index.html"], a[href*="mbti.html"], a[href*="board.html"]');
     
-    if (navEl && navEl.parentNode) {
-      navEl.parentNode.insertBefore(wrapper, navEl);
+    if (navLink) {
+      // < > 화살표 버튼이 포함된 '가장 바깥쪽 스크롤 상자'를 찾아 그 위로 탈출
+      let topNavContainer = navLink;
+      while (
+        topNavContainer.parentElement &&
+        topNavContainer.parentElement !== document.body &&
+        !topNavContainer.parentElement.classList.contains('container') &&
+        topNavContainer.parentElement.tagName !== 'MAIN'
+      ) {
+        topNavContainer = topNavContainer.parentElement;
+      }
+
+      if (topNavContainer && topNavContainer.parentNode) {
+        topNavContainer.parentNode.insertBefore(wrapper, topNavContainer);
+        return;
+      }
+    }
+
+    // 네비게이션 컨테이너를 찾지 못한 경우 컨테이너 또는 body 최상단에 삽입
+    const mainContainer = document.querySelector('.container') || document.querySelector('.app-container') || document.body;
+    if (mainContainer.firstChild) {
+      mainContainer.insertBefore(wrapper, mainContainer.firstChild);
     } else {
-      const container = document.querySelector('.container') || document.body;
-      container.insertBefore(wrapper, container.firstChild);
+      mainContainer.appendChild(wrapper);
     }
   }
 
