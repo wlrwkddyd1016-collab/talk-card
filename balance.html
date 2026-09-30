@@ -28,8 +28,16 @@
       gap: 16px;
     }
 
-    /* 1. 상단 내비게이션 바 */
+    /* 1. 상단 내비게이션 바 & 화살표 */
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
     .top-nav {
+      flex: 1;
+      min-width: 0;
       display: flex;
       gap: 6px;
       background: #ffffff;
@@ -37,54 +45,91 @@
       border-radius: 9999px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       border: 1px solid #e2e8f0;
-      width: 100%;
       overflow-x: auto;
       white-space: nowrap;
       scrollbar-width: none;
+      scroll-behavior: smooth;
     }
     .top-nav::-webkit-scrollbar { display: none; }
     .nav-link {
-      flex: 1;
-      text-align: center;
-      padding: 8px 4px;
-      font-size: 0.78rem;
+      padding: 8px 14px;
+      font-size: 0.84rem;
       font-weight: 600;
       color: #64748b;
       text-decoration: none;
       border-radius: 9999px;
       transition: all 0.2s;
-      display: inline-block;
       white-space: nowrap;
+      display: inline-block;
     }
     .nav-link.active {
       background: #4f46e5;
       color: #ffffff;
     }
 
-    /* 2. 헤더 */
-    .header-box {
-      text-align: center;
-      padding: 6px 0 2px;
-    }
-    .header-box h1 {
-      font-size: 1.55rem;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.5px;
-    }
-    .header-box p {
-      font-size: 0.88rem;
+    /* 좌우 이동 화살표 공통 버튼 */
+    .arrow-scroll-btn {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
       color: #64748b;
-      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.15s ease;
+      padding: 0;
+    }
+    .arrow-scroll-btn:hover {
+      background: #f8fafc;
+      color: #1e293b;
+      border-color: #cbd5e1;
+    }
+    .arrow-scroll-btn:active {
+      transform: scale(0.92);
     }
 
-    /* 3. 카테고리 칩 선택 바 */
+    /* 3. 카테고리 칩 선택 바 & 화살표 */
+    .category-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
     .category-scroll {
+      flex: 1;
+      min-width: 0;
       display: flex;
       gap: 8px;
       overflow-x: auto;
       padding: 4px 2px;
       scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .cat-btn:hover { background: #f1f5f9; }
+    .cat-btn.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #4f46e5;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
     }
     .category-scroll::-webkit-scrollbar { display: none; }
     .cat-btn {
@@ -305,14 +350,22 @@
 <body>
 
   <div class="container">
-    <!-- 상단 내비게이션 바 -->
-    <nav class="top-nav" aria-label="메인 메뉴">
-      <a href="./index.html" class="nav-link">💬 상황별 스몰토크</a>
-      <a href="./index.html#image" class="nav-link">🎯 이미지 게임</a>
-      <a href="./mbti.html" class="nav-link">🧠 MBTI별 질문</a>
-      <a href="./balance.html" class="nav-link active">⚖️ 밸런스 게임</a>
-      <a href="./board.html" class="nav-link">✍️ 당신의 질문은?</a>
-    </nav>
+    <!-- 상단 내비게이션 바 (좌우 화살표 포함) -->
+    <div class="nav-wrapper">
+      <button type="button" class="arrow-scroll-btn" onclick="scrollNav(-160)" aria-label="이전 메뉴">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <nav class="top-nav" id="topNav" aria-label="메인 메뉴">
+        <a href="./index.html" class="nav-link">💬 상황별 스몰토크</a>
+        <a href="./index.html#image" class="nav-link">🎯 이미지 게임</a>
+        <a href="./mbti.html" class="nav-link">🧠 MBTI별 질문</a>
+        <a href="./balance.html" class="nav-link active">⚖️ 밸런스 게임</a>
+        <a href="./board.html" class="nav-link">✍️ 당신의 질문은?</a>
+      </nav>
+      <button type="button" class="arrow-scroll-btn" onclick="scrollNav(160)" aria-label="다음 메뉴">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
 
     <!-- 헤더 -->
     <div class="header-box">
@@ -320,9 +373,17 @@
       <p>둘 중 하나만 골라야 한다면? 당신의 극단적 선택은!</p>
     </div>
 
-    <!-- 10개 카테고리 칩 -->
-    <div class="category-scroll" id="catScroll">
-      <!-- JS 자동 렌더링 -->
+    <!-- 10개 카테고리 칩 (좌우 화살표 포함) -->
+    <div class="category-wrapper">
+      <button type="button" class="arrow-scroll-btn" onclick="scrollCat(-200)" aria-label="이전 카테고리">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="category-scroll" id="catScroll">
+        <!-- JS 자동 렌더링 -->
+      </div>
+      <button type="button" class="arrow-scroll-btn" onclick="scrollCat(200)" aria-label="다음 카테고리">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
     </div>
 
     <!-- 대결 경기장 (카드 2장) -->
@@ -733,6 +794,13 @@
         catScroll.scrollLeft += e.deltaY;
       }
     }, { passive: false });
+    // 화살표 클릭 시 좌우 부드럽게 스크롤
+    function scrollNav(amount) {
+      document.getElementById('topNav').scrollBy({ left: amount, behavior: 'smooth' });
+    }
+    function scrollCat(amount) {
+      document.getElementById('catScroll').scrollBy({ left: amount, behavior: 'smooth' });
+    }
   </script>
 </body>
 </html>
