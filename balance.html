@@ -726,6 +726,13 @@
     // 초기 실행
     initCategories();
     renderQuestion();
+    // PC 마우스 휠로 카테고리 가로 스크롤 가능하게 처리
+    catScroll.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        catScroll.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
   </script>
 </body>
 </html>
