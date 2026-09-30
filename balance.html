@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>밸런스 게임 | 토크픽 - 둘 중 당신의 선택은?</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; }
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 1. 상단 내비게이션 바 */
+    .top-nav {
+      display: flex;
+      gap: 6px;
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 9999px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+      width: 100%;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+    }
+    .top-nav::-webkit-scrollbar { display: none; }
+    .nav-link {
+      flex: 1;
+      text-align: center;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+      border-radius: 9999px;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .nav-link.active {
+      background: #4f46e5;
+      color: #ffffff;
+    }
+
+    /* 2. 헤더 */
+    .header-box {
+      text-align: center;
+      padding: 6px 0 2px;
+    }
+    .header-box h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .header-box p {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-top: 5px;
+    }
+
+    /* 3. 카테고리 칩 선택 바 */
+    .category-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 2px;
+      scrollbar-width: none;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+    .cat-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .cat-btn:hover { background: #f1f5f9; }
+    .cat-btn.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #4f46e5;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+    }
+
+    /* 4. 밸런스 게임 경기장 (VS Arena) */
+    .game-arena {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      margin-top: 6px;
+    }
+    .cards-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      position: relative;
+    }
+
+    /* 중앙 VS 배지 */
+    .vs-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #0f172a;
+      color: #f8fafc;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.85rem;
+      border: 3px solid #f8fafc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* 선택 카드 디자인 */
+    .choice-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+      user-select: none;
+    }
+    .choice-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      border-color: #cbd5e1;
+    }
+    .choice-card.selected {
+      border-color: #4f46e5;
+      background: #f5f3ff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.18);
+    }
+    .choice-card.selected::after {
+      content: "✓ 내 선택";
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: #4f46e5;
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+    }
+
+    .card-label {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .choice-card.selected .card-label { color: #6366f1; }
+    .card-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.45;
+      word-break: keep-all;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* 투표 결과 퍼센트 바 */
+    .result-box {
+      margin-top: 14px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.3s ease;
+      display: none;
+    }
+    .choice-card.revealed .result-box {
+      opacity: 1;
+      transform: translateY(0);
+      display: block;
+    }
+    .percent-label {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #4f46e5;
+      border-radius: 9999px;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 5. 컨트롤 버튼 */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      background: #4f46e5;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .btn-main:hover { background: #4338ca; }
+    .btn-sub {
+      width: 100%;
+      padding: 12px;
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-sub:hover { background: #f8fafc; color: #1e293b; }
+
+    /* 토스트 알림 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 9px 18px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 10000;
+    }
+
+    /* 푸터 */
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-bottom: 20px;
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+    footer a { color: #64748b; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 상단 내비게이션 바 -->
+    <nav class="top-nav" aria-label="메인 메뉴">
+      <a href="./index.html" class="nav-link">💬 상황별 스몰토크</a>
+      <a href="./index.html#image" class="nav-link">🎯 이미지 게임</a>
+      <a href="./mbti.html" class="nav-link">🧠 MBTI별 질문</a>
+      <a href="./balance.html" class="nav-link active">⚖️ 밸런스 게임</a>
+      <a href="./board.html" class="nav-link">✍️ 당신의 질문은?</a>
+    </nav>
+
+    <!-- 헤더 -->
+    <div class="header-box">
+      <h1>⚖️ 밸런스 게임</h1>
+      <p>둘 중 하나만 골라야 한다면? 당신의 극단적 선택은!</p>
+    </div>
+
+    <!-- 10개 카테고리 칩 -->
+    <div class="category-scroll" id="catScroll">
+      <!-- JS 자동 렌더링 -->
+    </div>
+
+    <!-- 대결 경기장 (카드 2장) -->
+    <div class="game-arena">
+      <div class="cards-wrapper">
+        <div class="vs-badge">VS</div>
+
+        <!-- 왼쪽 카드 A -->
+        <div class="choice-card" id="cardA" onclick="chooseCard('A')">
+          <span class="card-label">OPTION A</span>
+          <div class="card-text" id="textA">로딩 중...</div>
+          <div class="result-box" id="resultA">
+            <div class="percent-label" id="pctA">0%</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="barA"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽 카드 B -->
+        <div class="choice-card" id="cardB" onclick="chooseCard('B')">
+          <span class="card-label">OPTION B</span>
+          <div class="card-text" id="textB">로딩 중...</div>
+          <div class="result-box" id="resultB">
+            <div class="percent-label" id="pctB">0%</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="barB"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 조작 버튼 -->
+      <div class="btn-group">
+        <button type="button" class="btn-main" onclick="nextQuestion()">🎲 다음 밸런스 게임</button>
+        <button type="button" class="btn-sub" onclick="copyBalanceQuestion()">📋 이 질문 복사해서 물어보기</button>
+      </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer>
+      <p>모임, 소개팅, 술자리에서 유쾌한 논쟁을 시작하는 밸런스 게임 생성기</p>
+      <p style="margin-top: 6px;">
+        <a href="./index.html">스몰토크</a> | <a href="./mbti.html">MBTI 질문</a> | <a href="./board.html">질문 방명록</a>
+      </p>
+      <p style="margin-top: 6px;">© 2026 토크픽 (TalkPick). All rights reserved.</p>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast">📋 밸런스 질문이 복사되었습니다!</div>
+
+  <script>
+    // 10개 카테고리 × 20개 질문 데이터 (총 200개)
+    const BALANCE_DATA = {
+      "food": {
+        name: "🍔 음식 & 맛집",
+        list: [
+          ["평생 탄산음료 없이 치킨·피자 먹기", "평생 김치 없이 라면·삼겹살 먹기"],
+          ["바삭한 탕수육 찍먹", "양념 밴 탕수육 부먹"],
+          ["평생 민트초코만 먹기", "평생 하와이안(파인애플) 피자만 먹기"],
+          ["평생 라면 안 먹기", "평생 치킨 안 먹기"],
+          ["미지근한 콜라 마시기", "얼음 가득 든 김빠진 밍밍한 콜라 마시기"],
+          ["고기 없는 고깃집 회식", "면 없는 라면 끓여 먹기"],
+          ["평생 매운 음식만 먹기 (불닭 맵기)", "평생 단 음식만 먹기"],
+          ["팥 붕어빵", "슈크림 붕어빵"],
+          ["평생 숟가락만 사용하기", "평생 젓가락만 사용하기"],
+          ["싱싱한 회에 초장 듬뿍", "싱싱한 회에 간장 & 생와사비"],
+          ["짜장면 곱빼기", "얼큰한 짬뽕"],
+          ["평생 쌀밥 안 먹기", "평생 밀가루 음식 안 먹기"],
+          ["삼겹살에 시원한 소주", "치킨에 시원한 생맥주"],
+          ["평생 소금(간) 없이 살기", "평생 설탕(단맛) 없이 살기"],
+          ["새콤하고 단단한 덜 익은 바나나", "달콤하고 물렁한 과숙성 바나나"],
+          ["말랑말랑 부드러운 복숭아 (물복)", "아삭아삭 달콤한 딱딱 복숭아 (딱복)"],
+          ["촉촉하게 흘러내리는 계란 반숙", "고소하고 퍽퍽한 계란 완숙"],
+          ["순대 찍어 먹을 때 고춧가루 소금", "순대 찍어 먹을 때 쌈장/초장"],
+          ["평생 커피 및 카페인 금지", "평생 야식 및 배달음식 금지"],
+          ["위생 최악인데 맛은 미슐랭 3스타", "위생 100점 완벽한데 맛은 최악"]
+        ]
+      },
+      "love": {
+        name: "💖 연애 & 사랑",
+        list: [
+          ["1년에 딱 한 번 만나는 완벽한 이상형", "매일매일 만나는데 그냥 평범한 사람"],
+          ["과거 연애사 복잡한 애인", "남사친/여사친 너무 많은 애인"],
+          ["내 생일 깜빡 잊어버린 애인", "내 이름 전 애인 이름으로 부른 애인"],
+          ["연락 10시간 동안 두절되는 애인", "맞춤법 매번 심하게 파괴하는 애인"],
+          ["내 절친 깻잎 떼어주는 애인", "내 절친 새우 껍질 까주는 애인"],
+          ["10년 지기 이성 베프 1명 있는 애인", "얕게 아는 이성 친구 100명 있는 애인"],
+          ["진짜 사랑하지만 통장 잔고 0원", "사랑하진 않지만 100억 자산가"],
+          ["화나면 입 꾹 닫고 잠수 타는 애인", "화나면 논리적으로 조목조목 따지는 애인"],
+          ["내가 미치도록 좋아하는 사람과 연애", "나를 목숨 걸고 좋아해 주는 사람과 연애"],
+          ["전 애인과 사업 동업하는 연인", "전 애인과 찐친으로 지내는 연인"],
+          ["하루 종일 칼답 요구하는 애인", "하루에 딱 1~2번만 연락되는 애인"],
+          ["단둘이 술 마시는 이성 친구 허용", "단둘이 심야 영화 보는 이성 친구 허용"],
+          ["100일/1주년 기념일 완벽하게 챙기기", "평소 일상에서 사소하게 챙겨주기"],
+          ["패션 감각 영원히 난해한 애인", "유머 감각 영원히 없는 진지충 애인"],
+          ["질투가 전혀 없어 무관심해 보이는 애인", "질투와 집착이 너무 심한 애인"],
+          ["풋풋했던 첫사랑과 결혼하기", "모든 걸 겪고 만난 마지막 사랑과 결혼"],
+          ["연애 5년 차 지루한 권태기", "썸 6개월 차 끝없는 밀당"],
+          ["스마트폰 비번 전부 공유하는 연애", "사생활 100% 철저히 보장하는 연애"],
+          ["나보다 10살 연상인 연인", "나보다 10살 연하인 연인"],
+          ["말도 없이 잠수 이별 당하기", "다른 사람 생겼다고 환승 이별 당하기"]
+        ]
+      },
+      "daily": {
+        name: "🌿 일상 & 라이프",
+        list: [
+          ["한여름에 에어컨 없이 살기", "한겨울에 보일러·난방 없이 살기"],
+          ["평생 매일 아침 6시 기상", "평생 매일 새벽 3시 취침"],
+          ["스마트폰 배터리 항상 5% 유지", "인터넷 속도 90년대 모뎀 속도"],
+          ["엘리베이터 고장 난 5층 살기", "햇빛 안 드는 지하 3층 살기"],
+          ["365일 내내 비 오는 날씨", "365일 내내 폭염 열대야 날씨"],
+          ["평생 집 청소만 전담하기", "평생 싱크대 설거지만 전담하기"],
+          ["평생 혼자 고독하게 살기", "평생 룸메이트 5명과 부대끼며 살기"],
+          ["머리 3일 안 감고 모임 외출", "양치 3일 안 하고 모임 외출"],
+          ["평생 대중교통(지하철·버스)만 타기", "평생 자전거·킥보드만 타기"],
+          ["주말마다 약속 풀코스로 나가기", "주말 내내 침대에서 넷플릭스 보기"],
+          ["시원한 바람 부는 푸른 산", "파도 소리 들리는 탁 트인 바다"],
+          ["스마트폰 없이 1주일 버티기", "사람·친구 한 명도 안 만나고 1달 버티기"],
+          ["평생 침대 없이 딱딱한 바닥에서 자기", "평생 좁은 소파에서 자기"],
+          ["12시간 푹 잤는데 온몸 뻐근하기", "3시간 쪽잠 잤는데 머리 맑고 개운하기"],
+          ["한겨울에 얼음장 찬물로 샤워", "한여름에 김 펄펄 나는 뜨거운 물로 샤워"],
+          ["평생 안경·렌즈 끼고 살기", "평생 외출할 때 마스크 끼고 살기"],
+          ["비 오는 날 아끼는 신발 다 젖기", "무더운 날 겨드랑이 땀 다 비치기"],
+          ["집안 청소 평생 외주 주기", "삼시 세끼 식사 평생 외주 주기"],
+          ["서울 중심가 좁은 원룸", "지방 한적한 넓은 40평 아파트"],
+          ["아침 7시에 활력 넘치는 아침형 인간", "새벽 2시에 아이디어 쏟아지는 올빼미"]
+        ]
+      },
+      "career": {
+        name: "💼 직장 & 커리어",
+        list: [
+          ["매일 야근하지만 월급 700만원", "매일 칼퇴하지만 월급 230만원"],
+          ["일은 천재인데 성격 파탄자인 사수", "일은 진짜 못하는데 인성 천사인 사수"],
+          ["출퇴근 왕복 3시간 네임드 대기업", "걸어서 5분 거리 탄탄한 중소기업"],
+          ["무능력해서 배울 게 없는 상사", "너무 엄격하고 무서워서 숨 막히는 상사"],
+          ["매주 회식 필참인 끈끈한 회사", "서로 인사도 안 하고 말 없는 삭막한 회사"],
+          ["내 기획 성과 홀라당 가로채는 상사", "자기 실수 전부 나한테 뒤집어씌우는 동기"],
+          ["꿈에 그리던 일인데 박봉", "적성에 최악인데 연봉 1억"],
+          ["칭찬 하나 없이 일만 기계처럼 시키는 상사", "카톡 하나까지 사사건건 간섭하는 상사"],
+          ["평생 100% 재택근무", "매일 출근하되 호텔식 점심·간식 평생 무료"],
+          ["말없이 보고서 100장 작성하기", "임원진 앞에서 30분 동안 즉흥 PT 발표"],
+          ["정년 65세 보장되는 안정적인 공기업", "5년 빡세게 벌고 대박 노리는 스타트업"],
+          ["일 완벽한데 싸가지 없는 부하직원", "일 못해서 답답한데 싹싹하고 충성하는 부하직원"],
+          ["첫 출근 날 30분 지각하기", "퇴근 5분 전에 전사 메일 대형 사고 치기"],
+          ["사내 연애 전 직원에게 공개하기", "사내 비밀 연애 3년 동안 숨기기"],
+          ["회식 1차 삼겹살 먹고 밤 10시 귀가", "회식 없이 조용히 야근 2시간 하기"],
+          ["혼자 모든 걸 책임지는 1인 사업가", "100명이 협업하는 대규모 팀 리더"],
+          ["월급날 매달 일주일씩 밀리기", "연말 보너스 50% 일방적 삭감"],
+          ["초고속 승진하되 업무 책임 막중", "만년 대리하되 책임 없이 속 편함"],
+          ["슬리퍼·반바지 가능한 자율 복장", "칼각 잡힌 정장 매일 착용"],
+          ["모니터 화면 실시간 감시당하기", "매시간 단위로 업무 일지 제출하기"]
+        ]
+      },
+      "superpower": {
+        name: "🔮 만약에 & 초능력",
+        list: [
+          ["10년 전 과거로 돌아가기", "10년 후 미래로 순간 이동하기"],
+          ["완벽한 투명인간 되기", "하늘을 자유롭게 날아다니기"],
+          ["다른 사람의 속마음을 읽는 독심술", "다른 사람 머릿속 내 기억 지우기"],
+          ["원하는 곳 어디든 가는 순간 이동", "시간을 자유롭게 멈추는 시간 정지"],
+          ["전 세계 모든 외국어 원어민 마스터", "세상 모든 악기 연주 마스터"],
+          ["현금 100억 받고 10살 늙기", "통장 그대로 두고 10살 젊어지기"],
+          ["가만히 누워서 자면서 돈 벌기", "잠을 아예 안 자도 피로도 0 유지"],
+          ["세상 모든 동물과 대화하기", "외계 생명체와 비밀 교신하기"],
+          ["내 수명이 몇 살까지인지 미리 알기", "내가 언제 어떤 이유로 죽는지 알기"],
+          ["아무리 폭식해도 살 안 찌는 체질", "아무리 세월 흘러도 안 늙는 피부"],
+          ["하루가 48시간으로 늘어나기", "1년 중 6개월 유급 휴가 받기"],
+          ["모든 걸 기억하는 암기력 100배", "위기 탈출하는 순발력·센스 100배"],
+          ["평생 거짓말만 하고 살기", "평생 거짓말 못 하고 솔직한 말만 하기"],
+          ["아무리 먹어도 절대 배부르지 않기", "아무것도 안 먹어도 배고픔 안 느끼기"],
+          ["로또 1등 20억 일시불 당첨", "매달 평생 500만원 연금 수령"],
+          ["물속에서 아가미로 숨쉬기", "불길 속에서도 타지 않는 방화 인간"],
+          ["내 미래 배우자 얼굴 10초 보기", "미래 내 20년 뒤 모습 10초 보기"],
+          ["꿈을 내 마음대로 조종하는 자각몽", "자는 동안 지식·공부 자동 습득"],
+          ["세상 모든 사람에게 호감 받기", "세상 그 누구에게도 미움받지 않기"],
+          ["내 기분대로 날씨 바꾸기", "보고 싶은 사람 내 앞으로 즉시 소환"]
+        ]
+      },
+      "trip": {
+        name: "✈️ 여행 & 휴가",
+        list: [
+          ["분 단위로 빼곡한 계획형 여행 (J)", "비행기표만 끊고 가는 무계획 여행 (P)"],
+          ["호화 리조트에서 쉬는 호캉스 휴양", "명소 2만 보 걷는 뚜벅이 관광"],
+          ["캐리어 2개 바리바리 챙겨가기", "백팩 하나 메고 현지 조달하기"],
+          ["1년 동안 국내 여행 12번 가기", "1년 모아서 파리·뉴욕 1번 가기"],
+          ["인생샷 건질 때까지 사진 1000장 찍기", "눈으로 담자며 사진 한 장도 안 찍기"],
+          ["이코노미 좌석 타고 유럽 12시간", "비즈니스 좌석 타고 제주도 1시간"],
+          ["골목길 현지 로컬 맛집만 찾아가기", "여행 3일 차에 삼겹살 한식당 가기"],
+          ["혼자 떠나는 1달 유럽 배낭여행", "절친 4명과 함께 떠나는 3박 4일 여행"],
+          ["비 쏟아지는 날의 운치 있는 바다", "눈보라 휘몰아치는 겨울 산"],
+          ["아침 7시에 호텔 조식 꼭 챙겨 먹기", "11시까지 늦잠 자고 나와서 브런치"],
+          ["말 한마디 안 통하는 신비로운 오지", "한국어 메뉴판 다 있는 익숙한 관광지"],
+          ["숙소는 잠만 자면 됨 (가성비 게하)", "숙소가 여행의 80% (5성급 호텔)"],
+          ["줄 2시간 서서 미슐랭 맛집 가기", "줄 없는 한적한 옆집 식당 가기"],
+          ["쇼핑몰·아울렛 쓸어 담는 쇼핑 여행", "스노클링·패러글라이딩 액티비티"],
+          ["따뜻한 에메랄드빛 동남아 휴양지", "오로라 쏟아지는 추운 북유럽"],
+          ["여행 첫날 여권 잃어버리기", "여행 첫날 캐리어 수하물 분실하기"],
+          ["택시 기사에게 바가지 5만원 쓰기", "길 가다가 현금 5만원 소매치기당하기"],
+          ["공항에서 비행기 5시간 지연", "비행기 맨 뒷자리 화장실 바로 앞자리"],
+          ["렌터카 빌려서 자유롭게 드라이브", "지하철·기차 타며 로컬 풍경 즐기기"],
+          ["여행지에서도 샐러드 식단 관리", "여행지에서는 칼로리 폭탄 3kg 찌기"]
+        ]
+      },
+      "friend": {
+        name: "👥 친구 & 인간관계",
+        list: [
+          ["나를 얕게 아는 지인 100명", "목숨도 바꿔줄 수 있는 찐친 1명"],
+          ["약속 시간 매번 30분 늦는 친구", "약속 시간 30분 일찍 와서 보채는 친구"],
+          ["뭐 먹을래 하면 무조건 '아무거나'", "자기 먹고 싶은 거 일방 통보하는 친구"],
+          ["10원 단위까지 칼같이 n분의 1", "대충 퉁치자면서 매번 덜 내는 친구"],
+          ["고민 털어놓으면 무조건적인 F 공감", "고민 털어놓으면 냉정한 T 팩폭 솔루션"],
+          ["내 비밀 다음 날 전파하는 입 가벼운 친구", "평소에 1년에 한 번 연락 올까 말까 한 친구"],
+          ["메시지 읽고 답장 안 하는 '읽씹'", "숫자 1 절대 안 사라지는 '안읽씹'"],
+          ["매일 1시간씩 전화하자고 하는 친구", "카톡 보내면 3일 뒤에 답장 오는 친구"],
+          ["앞에서는 칭찬만 하는 가식적인 친구", "앞에서 뼈 때리는 말만 하는 직설적인 친구"],
+          ["친구와 1억원 빌려주는 금전 거래", "친구와 동업해서 회사 차리기"],
+          ["친구 애인의 바람 목격 시 즉시 제보", "모르는 척 눈감아주고 넘어가기"],
+          ["밥값 8만원 내가 쏘고 커피 얻어먹기", "칼같이 영수증 분할 결제하기"],
+          ["모임에서 땀 흘리며 분위기 띄우는 MC", "구석에서 조용히 웃어주는 방청객 리액션"],
+          ["자기 자랑만 2시간 떠드는 친구", "남 험담·신세한탄만 2시간 하는 친구"],
+          ["친구가 내 흰 옷에 커피 쏟기", "친구가 내 새 차 시트에 음료수 쏟기"],
+          ["약속 당일 출발 직전에 취소 통보", "약속 장소 도착 5분 전에 장소 변경"],
+          ["친구가 내 전 애인과 절친 되기", "내가 친구의 전 애인과 절친 되기"],
+          ["손절할 때 이유 없이 서서히 멀어지기", "대놓고 문제점 다 말하고 칼손절하기"],
+          ["생일 선물 카톡 기프티콘 5만원", "직접 고른 손편지와 3만원짜리 선물"],
+          ["나보다 엄청 잘나가는 성공한 친구 보기", "나보다 힘들어하고 우울해하는 친구 보기"]
+        ]
+      },
+      "money": {
+        name: "💰 돈 & 가치관",
+        list: [
+          ["지금 당장 통장에 현금 5천만원", "10년 뒤에 받을 수 있는 현금 5억원"],
+          ["돈은 수백억인데 사회적 인정 0", "사회적 명예와 존경 최고인데 월 250만원"],
+          ["빚 10억 있는 슈퍼카 & 한강뷰 펜트하우스", "빚 0원인 시골 낡은 주택"],
+          ["로또 1등 당첨 시 가족에게 알리기", "평생 무덤까지 아무에게도 안 알리기"],
+          ["허리띠 졸라매고 30대 내 집 마련", "젊을 때 번 돈으로 세계 여행 다니기"],
+          ["100억 부자인데 곁에 사람 0명", "평범한 월급쟁이인데 사랑하는 가족과 화목"],
+          ["극단적 짠돌이로 살고 45세 은퇴", "쓸 거 다 쓰며 즐기고 70세까지 일하기"],
+          ["주식·코인 대박으로 인생 한 방", "안전한 예·적금으로 차곡차곡 모으기"],
+          ["비싸지만 평생 쓰는 명품 코트 하나", "가성비 뛰어난 SPA 브랜드 옷 30벌"],
+          ["성공을 위해 건강 약간 갈아 넣기", "성공 못 해도 몸과 마음의 여유 챙기기"],
+          ["사고 싶은 물건 보자마자 지르기", "장바구니에 넣고 한 달 동안 고민하기"],
+          ["남에게 아쉬운 소리 하며 돈 빌리기", "남에게 돈 빌려주고 전전긍긍하기"],
+          ["가성비 최고의 푸짐한 무한리필 뷔페", "양은 한입거리인데 고급스러운 파인다이닝"],
+          ["명절 상여금 현금 100만원 지급", "명절 전후 유급 휴가 일주일 부여"],
+          ["내가 모은 전 재산 자녀에게 물려주기", "전 재산 사회에 멋지게 기부하기"],
+          ["가사도우미·택시로 돈 써서 시간 사기", "몸으로 때우고 돈 알뜰하게 아끼기"],
+          ["당근마켓 중고 거래로 알뜰 쇼핑", "무조건 미개봉 새 상품만 구매"],
+          ["더 나은 미래를 위해 지금의 행복 참기", "현재의 행복이 우선! 미래는 그때 생각"],
+          ["물질적 풍요 (고급 외제차, 명품)", "정신적 풍요 (여유로운 취미, 독서)"],
+          ["평생 월 200만원 받는 백수", "월 1500만원 버는 극한의 격무"]
+        ]
+      },
+      "hobby": {
+        name: "🎮 취미 & 여가",
+        list: [
+          ["영화관에서 팝콘 없이 영화 보기", "콜라 없이 팝콘만 꾸역꾸역 먹기"],
+          ["혼자 코인노래방 가서 2시간 열창", "혼자 롯데월드 놀이공원 가기"],
+          ["게임할 때 공략집 전부 정독 후 시작", "공략 1도 안 보고 맨땅에 헤딩"],
+          ["주말 새벽 5시간 땀 흘리는 등산", "주말 내내 방에서 책 5시간 읽기"],
+          ["콘서트 무대 바로 앞 스탠딩 구역", "편안하게 등받이 있는 2층 지정석"],
+          ["침대에 누워서 하는 모바일 게임", "장비 갖추고 하는 PC·콘솔 게임"],
+          ["넷플릭스 1.5배속으로 결말까지 정주행", "1.0배속으로 대사 음미하며 보기"],
+          ["운동 전혀 안 하고 야식 먹기", "매일 헬스장 출석하고 근육통 앓기"],
+          ["친구들과 둘러앉아 하는 보드게임", "헤드셋 끼고 밤새우는 롤·배그"],
+          ["결말 반전 스포일러 다 알고 보기", "사전 정보 0% 상태로 영화 보기"],
+          ["웹툰 완결 날 때까지 기다렸다 몰아보기", "매주 자정에 올라올 때마다 1화씩 쿠키 굽기"],
+          ["직접 텐트 치고 모닥불 피우는 캠핑", "모든 게 다 갖춰진 럭셔리 글램핑"],
+          ["단서 찾아 탈출하는 실내 방탈출", "땀 흘리며 뛰는 야외 서바이벌 게임"],
+          ["사진 찍기 좋은 인스타 핫플 카페", "조용하고 원두 향 깊은 동네 카페"],
+          ["기타나 피아노 악기 하나 마스터", "수영이나 테니스 스포츠 하나 마스터"],
+          ["주말에 밀린 드라마 시리즈 정주행", "주말에 알람 끄고 하루 종일 잠자기"],
+          ["새로 나온 신곡 차트 탐색하기", "학창 시절 듣던 플레이리스트 무한 반복"],
+          ["치킨 먹으며 야구장 직관 응원", "에어컨 틀고 집에서 편하게 TV 중계"],
+          ["보는 재미가 넘치는 축구", "스피디하고 골 많이 터지는 농구"],
+          ["놀이공원 롤러코스터 맨 앞자리 타기", "귀신의 집 맨 선두로 들어가기"]
+        ]
+      },
+      "spicy": {
+        name: "🔥 매운맛 & 논쟁",
+        list: [
+          ["물 한 방울 없는 사막 한가운데 표류", "얼음뿐인 북극 빙하 한가운데 표류"],
+          ["내 속마음이 전 세계 사람에게 생중계", "내가 평생 다른 사람에게 말 못 함"],
+          ["마늘 먹고 양치 안 한 사람과 키스", "방귀 세게 뀌고 발뺌하는 사람과 포옹"],
+          ["스마트폰 없이 1년 동안 살기", "친구·연인 아무도 못 만나고 1년 살기"],
+          ["내 평생 인터넷 검색 기록 전 세계 공개", "내 통장 잔고 0원 되기"],
+          ["100% 확률로 현금 1억원 받기", "50% 확률로 100억원 받기 (실패 시 0원)"],
+          ["온몸에 털이 하나도 없는 민둥 인간", "온몸이 복슬복슬 털로 뒤덮인 인간"],
+          ["손바닥만 한 날아다니는 바퀴벌레 잡기", "비둘기 10마리와 좁은 엘리베이터 10분"],
+          ["평생 매일 똑같은 옷 한 벌만 입기", "평생 매일 똑같은 메뉴 한 가지만 먹기"],
+          ["말할 때마다 쇼미더머니 랩으로 말하기", "걸을 때마다 마이클 잭슨 문워크로 걷기"],
+          ["내 중학교 흑역사 영상 1000만 조회수", "세상 누구도 내 존재를 기억 못 함"],
+          ["머리에 도깨비 뿔 2개 달리기", "엉덩이에 복슬복슬 강아지 꼬리 달리기"],
+          ["모기 50마리 윙윙거리는 방에서 자기", "겨울에 찬물만 콸콸 나오는 집에서 1달"],
+          ["말할 때마다 고함지르며 소리치기", "말할 때마다 귓속말로 속삭이기"],
+          ["한 달 동안 샤워 아예 안 하기", "한 달 동안 머리 아예 안 감기"],
+          ["내 치명적 비밀을 온 국민이 다 알기", "내가 주변 사람들의 모든 추악한 비밀 알기"],
+          ["평생 거울을 못 보고 살기", "평생 내 사진을 못 찍고 살기"],
+          ["발 냄새 청국장급인 사람과 룸메", "입 냄새 하수구급인 사람과 룸메"],
+          ["평생 밥·빵·면 탄수화물 금지", "평생 고기·생선 단백질 금지"],
+          ["지하철에서 전력 질주하다 콰당 넘어지기", "조용한 독서실에서 뿡 방귀 뀌기"]
+        ]
+      }
+    };
+
+    let currentCat = "food";
+    let currentIndex = 0;
+    let chosenOption = null;
+
+    // 카테고리 칩 렌더링
+    const catScroll = document.getElementById('catScroll');
+    function initCategories() {
+      catScroll.innerHTML = Object.keys(BALANCE_DATA).map(key => {
+        const item = BALANCE_DATA[key];
+        const isActive = key === currentCat ? 'active' : '';
+        return `<button type="button" class="cat-btn ${isActive}" onclick="changeCategory('${key}')">${item.name}</button>`;
+      }).join('');
+    }
+
+    // 카테고리 변경
+    function changeCategory(catKey) {
+      currentCat = catKey;
+      currentIndex = 0;
+      initCategories();
+      renderQuestion();
+    }
+
+    // 질문 화면 렌더링
+    function renderQuestion() {
+      const q = BALANCE_DATA[currentCat].list[currentIndex];
+      document.getElementById('textA').textContent = q[0];
+      document.getElementById('textB').textContent = q[1];
+
+      // 카드 상태 초기화
+      const cardA = document.getElementById('cardA');
+      const cardB = document.getElementById('cardB');
+      cardA.className = 'choice-card';
+      cardB.className = 'choice-card';
+      document.getElementById('barA').style.width = '0%';
+      document.getElementById('barB').style.width = '0%';
+      chosenOption = null;
+    }
+
+    // 카드 선택 인터랙션
+    function chooseCard(opt) {
+      if (chosenOption === opt) return;
+      chosenOption = opt;
+
+      const cardA = document.getElementById('cardA');
+      const cardB = document.getElementById('cardB');
+
+      cardA.classList.remove('selected');
+      cardB.classList.remove('selected');
+
+      if (opt === 'A') cardA.classList.add('selected');
+      if (opt === 'B') cardB.classList.add('selected');
+
+      // 리얼한 밸런스 비율 시뮬레이션 (40% ~ 60% 사이의 박빙 비율)
+      cardA.classList.add('revealed');
+      cardB.classList.add('revealed');
+
+      // 결정론적 비율 생성 (질문 텍스트 기반)
+      const q = BALANCE_DATA[currentCat].list[currentIndex];
+      const seed = (q[0].length * 7 + q[1].length * 13 + currentIndex * 19) % 21; // 0 ~ 20
+      const pctValA = 40 + seed; // 40% ~ 60%
+      const pctValB = 100 - pctValA;
+
+      document.getElementById('pctA').textContent = pctValA + '%';
+      document.getElementById('pctB').textContent = pctValB + '%';
+
+      setTimeout(() => {
+        document.getElementById('barA').style.width = pctValA + '%';
+        document.getElementById('barB').style.width = pctValB + '%';
+      }, 50);
+    }
+
+    // 다음 질문 뽑기
+    function nextQuestion() {
+      const total = BALANCE_DATA[currentCat].list.length;
+      let nextIdx = Math.floor(Math.random() * total);
+      if (nextIdx === currentIndex) {
+        nextIdx = (currentIndex + 1) % total;
+      }
+      currentIndex = nextIdx;
+      renderQuestion();
+    }
+
+    // 질문 클립보드 복사
+    function copyBalanceQuestion() {
+      const q = BALANCE_DATA[currentCat].list[currentIndex];
+      const text = `[⚖️ 밸런스 게임] 둘 중 당신의 선택은?\n\nA: ${q[0]}\nvs\nB: ${q[1]}\n\n👉 지금 투표하기: https://talkpick.kr/balance.html`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+      });
+    }
+
+    // 초기 실행
+    initCategories();
+    renderQuestion();
+  </script>
+</body>
+</html>
