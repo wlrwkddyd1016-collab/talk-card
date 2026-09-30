@@ -694,6 +694,24 @@
     let currentIndex = 0;
     let chosenOption = null;
 
+    // 💡 중복 방지: 카테고리별 남은 질문 보관 덱
+    const unusedQuestionPool = {};
+
+    function getNextQuestionIndex(catKey) {
+      // 질문을 다 봤거나 처음이면 20개 질문을 무작위로 섞음 (피셔-예이츠 셔플)
+      if (!unusedQuestionPool[catKey] || unusedQuestionPool[catKey].length === 0) {
+        const total = BALANCE_DATA[catKey].list.length;
+        const arr = Array.from({ length: total }, (_, i) => i);
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        unusedQuestionPool[catKey] = arr;
+      }
+      // 섞인 카드 뭉치에서 1장씩 뽑아서 반환 (중복 절대 없음)
+      return unusedQuestionPool[catKey].pop();
+    }
+
     // 카테고리 칩 렌더링
     const catScroll = document.getElementById('catScroll');
     function initCategories() {
@@ -707,7 +725,7 @@
     // 카테고리 변경
     function changeCategory(catKey) {
       currentCat = catKey;
-      currentIndex = 0;
+      currentIndex = getNextQuestionIndex(currentCat);
       initCategories();
       renderQuestion();
     }
@@ -762,15 +780,10 @@
     }
 
     // 다음 질문 뽑기
-    function nextQuestion() {
-      const total = BALANCE_DATA[currentCat].list.length;
-      let nextIdx = Math.floor(Math.random() * total);
-      if (nextIdx === currentIndex) {
-        nextIdx = (currentIndex + 1) % total;
-      }
-      currentIndex = nextIdx;
-      renderQuestion();
-    }
+function nextQuestion() {
+  currentIndex = getNextQuestionIndex(currentCat);
+  renderQuestion();
+}
 
     // 질문 클립보드 복사
     function copyBalanceQuestion() {
@@ -785,8 +798,9 @@
     }
 
     // 초기 실행
-    initCategories();
-    renderQuestion();
+initCategories();
+currentIndex = getNextQuestionIndex(currentCat);
+renderQuestion();
     // PC 마우스 휠로 카테고리 가로 스크롤 가능하게 처리
     catScroll.addEventListener('wheel', (e) => {
       if (e.deltaY !== 0) {
